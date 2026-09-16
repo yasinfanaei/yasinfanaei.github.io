@@ -1,10 +1,27 @@
 media:
-  input: assets/uploads
-  output: assets/uploads
+- name: images
+  label: Images / تصاویر
+  input: assets/uploads/images
+  output: assets/uploads/images
   rename: safe
   categories:
   - image
+- name: documents
+  label: CV & Documents / رزومه و اسناد
+  input: assets/uploads/documents
+  output: assets/uploads/documents
+  rename: safe
+  categories:
   - document
+- name: publication_files
+  label: Publication files / فایل‌های پژوهشی
+  input: assets/uploads/publications
+  output: assets/uploads/publications
+  rename: safe
+  categories:
+  - document
+  - compressed
+  - spreadsheet
 settings:
   content:
     merge: true
@@ -226,6 +243,12 @@ content:
             label: Journal article
           - name: conference
             label: Conference paper / presentation
+          - name: working_paper
+            label: Working paper
+          - name: book_chapter
+            label: Book chapter
+          - name: report
+            label: Research report
       - name: status
         label: Publication status
         type: select
@@ -262,6 +285,39 @@ content:
         type: string
       - name: url
         label: Publication URL (verified only)
+        type: string
+      - name: abstract
+        label: Abstract / چکیده
+        type: text
+      - name: keywords
+        label: Keywords / کلیدواژه‌ها
+        type: string
+        list: true
+      - name: volume
+        label: Volume (verified only)
+        type: string
+      - name: issue
+        label: Issue (verified only)
+        type: string
+      - name: pages
+        label: Pages (verified only)
+        type: string
+      - name: pdf
+        label: PDF / فایل مقاله
+        type: file
+        options:
+          media: publication_files
+          extensions:
+          - pdf
+          rename: safe
+      - name: data_url
+        label: Data URL / پیوند داده
+        type: string
+      - name: code_url
+        label: Code URL / پیوند کد
+        type: string
+      - name: replication_url
+        label: Replication URL / بسته بازتولید
         type: string
       - name: note
         label: Note
@@ -435,6 +491,55 @@ content:
       create: false
       rename: false
       delete: false
+  - name: en_news
+    label: News & Updates
+    type: file
+    path: content/en/news.json
+    format: json
+    fields:
+    - name: intro
+      label: Page introduction / معرفی صفحه
+      type: text
+    - name: items
+      label: Updates / تازه‌ها
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {date}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: summary
+        label: Summary
+        type: text
+      - name: category
+        label: Category
+        type: string
+      - name: url
+        label: Optional link
+        type: string
+      - name: featured
+        label: Feature on homepage
+        type: boolean
+      - name: published
+        label: Publicly visible
+        type: boolean
+    operations:
+      create: false
+      rename: false
+      delete: false
   - name: en_site
     label: Site Settings
     type: file
@@ -452,6 +557,34 @@ content:
       label: SEO keywords
       type: string
       list: true
+    - name: page_seo
+      label: Page SEO / سئوی صفحات
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{id} — {title}'
+      fields:
+      - name: id
+        label: Page ID
+        type: select
+        options:
+          values:
+          - home
+          - research
+          - publications
+          - experience
+          - cv
+          - contact
+          - teaching
+          - news
+          - search
+      - name: title
+        label: SEO title
+        type: string
+      - name: description
+        label: SEO description
+        type: text
     - name: footer_label
       label: Footer label
       type: string
@@ -595,6 +728,96 @@ content:
         type: string
       - name: print
         label: Print
+        type: string
+      - name: home_news_eyebrow
+        label: home_news_eyebrow
+        type: string
+      - name: home_news_title
+        label: home_news_title
+        type: string
+      - name: home_news_link
+        label: home_news_link
+        type: string
+      - name: news_eyebrow
+        label: news_eyebrow
+        type: string
+      - name: news_title
+        label: news_title
+        type: string
+      - name: news_empty
+        label: news_empty
+        type: string
+      - name: search_eyebrow
+        label: search_eyebrow
+        type: string
+      - name: search_title
+        label: search_title
+        type: string
+      - name: search_placeholder
+        label: search_placeholder
+        type: string
+      - name: search_no_results
+        label: search_no_results
+        type: string
+      - name: search_results_label
+        label: search_results_label
+        type: string
+      - name: publication_search_placeholder
+        label: publication_search_placeholder
+        type: string
+      - name: publication_all_types
+        label: publication_all_types
+        type: string
+      - name: publication_all_statuses
+        label: publication_all_statuses
+        type: string
+      - name: publication_all_years
+        label: publication_all_years
+        type: string
+      - name: publication_clear_filters
+        label: publication_clear_filters
+        type: string
+      - name: citation_copy
+        label: citation_copy
+        type: string
+      - name: citation_bibtex
+        label: citation_bibtex
+        type: string
+      - name: citation_ris
+        label: citation_ris
+        type: string
+      - name: citation_copied
+        label: citation_copied
+        type: string
+      - name: abstract_label
+        label: abstract_label
+        type: string
+      - name: keywords_label
+        label: keywords_label
+        type: string
+      - name: pdf_label
+        label: pdf_label
+        type: string
+      - name: data_label
+        label: data_label
+        type: string
+      - name: code_label
+        label: code_label
+        type: string
+      - name: replication_label
+        label: replication_label
+        type: string
+      - name: theme_light
+        label: theme_light
+        type: string
+      - name: theme_dark
+        label: theme_dark
+        type: string
+      - name: theme_system
+        label: theme_system
+        type: string
+      - name: search_button
+        label: search_button
         type: string
     operations:
       create: false
@@ -814,9 +1037,15 @@ content:
         options:
           values:
           - name: journal
-            label: Journal article
+            label: مقاله مجله
           - name: conference
-            label: Conference paper / presentation
+            label: مقاله / ارائه کنفرانسی
+          - name: working_paper
+            label: مقاله در دست کار
+          - name: book_chapter
+            label: فصل کتاب
+          - name: report
+            label: گزارش پژوهشی
       - name: status
         label: Publication status
         type: select
@@ -853,6 +1082,39 @@ content:
         type: string
       - name: url
         label: Publication URL (verified only)
+        type: string
+      - name: abstract
+        label: Abstract / چکیده
+        type: text
+      - name: keywords
+        label: Keywords / کلیدواژه‌ها
+        type: string
+        list: true
+      - name: volume
+        label: Volume (verified only)
+        type: string
+      - name: issue
+        label: Issue (verified only)
+        type: string
+      - name: pages
+        label: Pages (verified only)
+        type: string
+      - name: pdf
+        label: PDF / فایل مقاله
+        type: file
+        options:
+          media: publication_files
+          extensions:
+          - pdf
+          rename: safe
+      - name: data_url
+        label: Data URL / پیوند داده
+        type: string
+      - name: code_url
+        label: Code URL / پیوند کد
+        type: string
+      - name: replication_url
+        label: Replication URL / بسته بازتولید
         type: string
       - name: note
         label: Note
@@ -1026,6 +1288,55 @@ content:
       create: false
       rename: false
       delete: false
+  - name: fa_news
+    label: اخبار و تازه‌ها
+    type: file
+    path: content/fa/news.json
+    format: json
+    fields:
+    - name: intro
+      label: Page introduction / معرفی صفحه
+      type: text
+    - name: items
+      label: Updates / تازه‌ها
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {date}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: summary
+        label: Summary
+        type: text
+      - name: category
+        label: Category
+        type: string
+      - name: url
+        label: Optional link
+        type: string
+      - name: featured
+        label: Feature on homepage
+        type: boolean
+      - name: published
+        label: Publicly visible
+        type: boolean
+    operations:
+      create: false
+      rename: false
+      delete: false
   - name: fa_site
     label: تنظیمات سایت
     type: file
@@ -1043,6 +1354,34 @@ content:
       label: کلیدواژه‌های SEO
       type: string
       list: true
+    - name: page_seo
+      label: Page SEO / سئوی صفحات
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{id} — {title}'
+      fields:
+      - name: id
+        label: Page ID
+        type: select
+        options:
+          values:
+          - home
+          - research
+          - publications
+          - experience
+          - cv
+          - contact
+          - teaching
+          - news
+          - search
+      - name: title
+        label: SEO title
+        type: string
+      - name: description
+        label: SEO description
+        type: text
     - name: footer_label
       label: Footer label
       type: string
@@ -1187,6 +1526,96 @@ content:
       - name: print
         label: print
         type: string
+      - name: home_news_eyebrow
+        label: home_news_eyebrow
+        type: string
+      - name: home_news_title
+        label: home_news_title
+        type: string
+      - name: home_news_link
+        label: home_news_link
+        type: string
+      - name: news_eyebrow
+        label: news_eyebrow
+        type: string
+      - name: news_title
+        label: news_title
+        type: string
+      - name: news_empty
+        label: news_empty
+        type: string
+      - name: search_eyebrow
+        label: search_eyebrow
+        type: string
+      - name: search_title
+        label: search_title
+        type: string
+      - name: search_placeholder
+        label: search_placeholder
+        type: string
+      - name: search_no_results
+        label: search_no_results
+        type: string
+      - name: search_results_label
+        label: search_results_label
+        type: string
+      - name: publication_search_placeholder
+        label: publication_search_placeholder
+        type: string
+      - name: publication_all_types
+        label: publication_all_types
+        type: string
+      - name: publication_all_statuses
+        label: publication_all_statuses
+        type: string
+      - name: publication_all_years
+        label: publication_all_years
+        type: string
+      - name: publication_clear_filters
+        label: publication_clear_filters
+        type: string
+      - name: citation_copy
+        label: citation_copy
+        type: string
+      - name: citation_bibtex
+        label: citation_bibtex
+        type: string
+      - name: citation_ris
+        label: citation_ris
+        type: string
+      - name: citation_copied
+        label: citation_copied
+        type: string
+      - name: abstract_label
+        label: abstract_label
+        type: string
+      - name: keywords_label
+        label: keywords_label
+        type: string
+      - name: pdf_label
+        label: pdf_label
+        type: string
+      - name: data_label
+        label: data_label
+        type: string
+      - name: code_label
+        label: code_label
+        type: string
+      - name: replication_label
+        label: replication_label
+        type: string
+      - name: theme_light
+        label: theme_light
+        type: string
+      - name: theme_dark
+        label: theme_dark
+        type: string
+      - name: theme_system
+        label: theme_system
+        type: string
+      - name: search_button
+        label: search_button
+        type: string
     operations:
       create: false
       rename: false
@@ -1212,6 +1641,7 @@ content:
         - webp
         - svg
         rename: safe
+        media: images
     - name: favicon
       label: Favicon / آیکون سایت
       type: image
@@ -1223,6 +1653,7 @@ content:
         - jpeg
         - webp
         rename: safe
+        media: images
     - name: profile_image
       label: Profile photo / عکس پروفایل
       type: image
@@ -1233,6 +1664,7 @@ content:
         - png
         - webp
         rename: safe
+        media: images
     - name: cv_pdf
       label: CV PDF / رزومه PDF
       type: file
@@ -1240,6 +1672,7 @@ content:
         extensions:
         - pdf
         rename: safe
+        media: documents
     - name: cv_docx
       label: CV Word / رزومه Word
       type: file
@@ -1247,6 +1680,7 @@ content:
         extensions:
         - docx
         rename: safe
+        media: documents
     - name: open_graph_image
       label: Social preview image / تصویر اشتراک‌گذاری
       type: image
@@ -1257,8 +1691,37 @@ content:
         - png
         - webp
         rename: safe
+        media: images
   - name: colors
     label: Colors / رنگ‌ها
+    type: object
+    fields:
+    - name: background
+      label: Background
+      type: string
+    - name: surface
+      label: Cards / surface
+      type: string
+    - name: text
+      label: Main text
+      type: string
+    - name: muted
+      label: Muted text
+      type: string
+    - name: line
+      label: Borders
+      type: string
+    - name: accent
+      label: Primary accent
+      type: string
+    - name: accent_secondary
+      label: Secondary accent
+      type: string
+    - name: soft
+      label: Soft background
+      type: string
+  - name: dark_colors
+    label: Dark theme colors / رنگ‌های حالت تیره
     type: object
     fields:
     - name: background
@@ -1389,6 +1852,12 @@ content:
     - name: show_brand_name
       label: Show name next to logo / نمایش نام کنار لوگو
       type: boolean
+    - name: show_theme_switch
+      label: Show Light/Dark/System switch
+      type: boolean
+    - name: show_search
+      label: Show global search
+      type: boolean
   - name: home_sections
     label: Homepage sections / بخش‌های صفحه اصلی
     type: object
@@ -1406,10 +1875,66 @@ content:
         - about
         - research
         - education
+        - news
     - name: enabled
       label: Visible
+      type: boolean
+  - name: theme
+    label: Theme / پوسته
+    type: object
+    fields:
+    - name: default_mode
+      label: Default theme
+      type: select
+      options:
+        values:
+        - name: system
+          label: Follow system / سیستم
+        - name: light
+          label: Light / روشن
+        - name: dark
+          label: Dark / تیره
+  - name: analytics
+    label: Analytics / آمار بازدید (اختیاری)
+    type: object
+    fields:
+    - name: enabled
+      label: Enable analytics
+      type: boolean
+    - name: provider
+      label: Provider
+      type: select
+      options:
+        values:
+        - name: google_analytics
+          label: Google Analytics 4
+    - name: measurement_id
+      label: GA4 Measurement ID (G-...)
+      type: string
+      pattern: ^$|^G-[A-Z0-9]+$
+      description: Leave blank while analytics is disabled.
+  - name: seo
+    label: SEO & indexing / سئو و نمایه‌سازی
+    type: object
+    fields:
+    - name: site_url
+      label: Public site URL
+      type: string
+      required: true
+      pattern: ^https://.+
+    - name: structured_data_enabled
+      label: Enable Person/ProfilePage structured data
+      type: boolean
+    - name: indexing_enabled
+      label: Allow search-engine indexing
       type: boolean
   operations:
     create: false
     rename: false
     delete: false
+actions:
+- name: validate-site
+  label: Validate site / بررسی سلامت سایت
+  workflow: validate.yml
+  ref: current
+  cancelable: false
