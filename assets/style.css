@@ -159,3 +159,58 @@ html.design-hide-language-switch [data-slot="language-switch"] { display:none; }
 [data-home-section][hidden] { display:none !important; }
 .brand { display:inline-flex; align-items:center; gap:10px; }
 .brand-logo { width:34px; height:34px; object-fit:contain; border-radius:8px; }
+
+/* Academic Pro: theme, keyboard access, and compact header actions */
+html[data-theme="dark"] { color-scheme: dark; }
+html[data-theme="dark"] .lede,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .note { color: var(--text); }
+html[data-theme="dark"] .button { color: var(--bg); }
+html[data-theme="dark"] .skip-link { background: var(--surface); color: var(--text); }
+.header-actions { display:flex; align-items:center; gap:8px; }
+.search-link { display:inline-flex; align-items:center; gap:5px; min-height:36px; padding:6px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--text); text-decoration:none; font-size:.85rem; }
+.search-link:hover { background:var(--soft); color:var(--text); }
+.theme-switch select { min-height:36px; max-width:112px; padding:5px 26px 5px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--text); font:inherit; font-size:.82rem; }
+.visually-hidden { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
+:focus-visible { outline:3px solid color-mix(in srgb,var(--accent) 70%,transparent); outline-offset:3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}
+@media (max-width:820px) {
+  .header-actions { flex-wrap:wrap; }
+  .search-link span { display:none; }
+  .theme-switch select { max-width:104px; }
+}
+
+/* Academic Pro: search and news */
+.search-box { display:block; max-width:760px; margin-top:24px; }
+.search-box input { width:100%; min-height:52px; padding:12px 16px; border:1px solid var(--line); border-radius:var(--card-radius); background:var(--surface); color:var(--text); font:inherit; }
+.search-results { display:grid; gap:0; }
+.search-result { padding:0 0 26px; margin:0 0 26px; border-bottom:1px solid var(--line); }
+.search-result:last-child { border-bottom:0; }
+.search-result .eyebrow { margin-bottom:6px; }
+.news-card-title { margin:0 0 8px; font-family:var(--font-en); font-size:1.15rem; line-height:1.3; }
+html[dir="rtl"] .news-card-title { font-family:var(--font-fa); }
+.news-card-title a { color:var(--text); text-decoration:none; }
+.news-card-title a:hover { color:var(--accent); }
+.section-link { margin-top:24px; }
+
+/* Academic Pro: publication discovery and citation tools */
+.publication-tools-wrap { margin-top:28px; }
+.publication-tools { display:grid; grid-template-columns:minmax(220px,2fr) repeat(3,minmax(130px,1fr)) auto; gap:10px; align-items:center; }
+.publication-tools input,.publication-tools select,.publication-tools button { min-height:42px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--text); font:inherit; padding:8px 11px; }
+.publication-tools .filter-clear { cursor:pointer; }
+.publication-abstract { margin:14px 0; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--soft); }
+.publication-abstract summary { cursor:pointer; font-weight:700; }
+.publication-keywords { font-size:.92rem; color:var(--muted); }
+.publication-resource-links { margin-top:14px; }
+.citation-actions { display:flex; flex-wrap:wrap; gap:8px; margin:15px 0 0; }
+.citation-button { border:1px solid var(--line); border-radius:999px; padding:6px 10px; background:var(--surface); color:var(--text); font:inherit; font-size:.82rem; cursor:pointer; }
+.citation-button:hover { background:var(--soft); }
+@media (max-width:900px) { .publication-tools { grid-template-columns:1fr 1fr; } .filter-search { grid-column:1 / -1; } }
+@media (max-width:560px) { .publication-tools { grid-template-columns:1fr; } .filter-search { grid-column:auto; } }
+
+/* Academic Pro: 404 and metadata-safe UI */
+.error-page { min-height:100vh; display:grid; place-items:center; padding:40px 0; }
+.error-card { max-width:760px; }
+.error-card hr { margin:36px 0; border:0; border-top:1px solid var(--line); }

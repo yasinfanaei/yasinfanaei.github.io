@@ -3,7 +3,7 @@ from __future__ import annotations
 import json,re
 from pathlib import Path
 from typing import Any
-REQUIRED_FILES={'profile.json','education.json','research.json','publications.json','projects.json','experience.json','awards.json','skills.json','site.json'}
+REQUIRED_FILES={'profile.json','education.json','research.json','publications.json','projects.json','experience.json','awards.json','skills.json','site.json','news.json'}
 LOCALES=('en','fa')
 BANNED_KEYS={'national_id','nationalId','marital_status','maritalStatus','date_of_birth','dateOfBirth','phone','private_phone'}
 LONG_NUMBER=re.compile(r'(?<!\d)\d{10,12}(?!\d)')

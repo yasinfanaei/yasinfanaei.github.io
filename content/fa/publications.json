@@ -19,7 +19,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": true
+      "featured": true,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "corruption-money-laundering-countries",
@@ -39,7 +48,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "determinants-money-laundering-corruption-informal-economy",
@@ -59,7 +77,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": true
+      "featured": true,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "good-governance-tourism-silk-road",
@@ -79,7 +106,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "corruption-government-expenditure-current-account-mena",
@@ -99,7 +135,16 @@
       "doi": "",
       "url": "",
       "note": "سال این مقاله کنفرانسی در رزومه ارسالی به‌طور روشن مشخص نشده است.",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     }
   ]
 }

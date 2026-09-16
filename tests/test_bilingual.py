@@ -4,8 +4,8 @@ import unittest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["index.html", "research.html", "publications.html", "experience.html", "cv.html", "contact.html", "teaching.html"]
-CONTENT = ["profile.json", "education.json", "research.json", "publications.json", "projects.json", "experience.json", "awards.json", "skills.json", "site.json"]
+PAGES = ["index.html", "research.html", "publications.html", "experience.html", "cv.html", "contact.html", "teaching.html", "news.html", "search.html"]
+CONTENT = ["profile.json", "education.json", "research.json", "publications.json", "projects.json", "experience.json", "awards.json", "skills.json", "site.json", "news.json"]
 
 
 class BilingualSiteTests(unittest.TestCase):
@@ -49,8 +49,15 @@ class BilingualSiteTests(unittest.TestCase):
 
     def test_pages_cms_has_all_bilingual_content_paths(self):
         cfg = yaml.safe_load((ROOT / ".pages.yml").read_text(encoding="utf-8"))
-        paths = {entry.get("path") for entry in cfg.get("content", [])}
+        def flatten(entries):
+            for entry in entries:
+                if entry.get("type") == "group":
+                    yield from flatten(entry.get("items", []))
+                else:
+                    yield entry
+        paths = {entry.get("path") for entry in flatten(cfg.get("content", []))}
         expected = {f"content/{locale}/{name}" for locale in ("en", "fa") for name in CONTENT}
+        expected.add("content/settings/design.json")
         self.assertEqual(paths, expected)
 
 

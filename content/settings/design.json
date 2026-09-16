@@ -2,10 +2,10 @@
   "branding": {
     "logo": "",
     "favicon": "assets/favicon.svg",
-    "profile_image": "assets/uploads/profile.jpeg",
-    "cv_pdf": "assets/uploads/Yasin_Fanaei_Shahroudi_CV.pdf",
-    "cv_docx": "assets/uploads/Yasin_Fanaei_Shahroudi_CV.docx",
-    "open_graph_image": "assets/uploads/profile.jpeg"
+    "profile_image": "assets/uploads/images/profile.jpeg",
+    "cv_pdf": "assets/uploads/documents/Yasin_Fanaei_Shahroudi_CV.pdf",
+    "cv_docx": "assets/uploads/documents/Yasin_Fanaei_Shahroudi_CV.docx",
+    "open_graph_image": "assets/uploads/images/profile.jpeg"
   },
   "colors": {
     "background": "#fbfbf8",
@@ -44,7 +44,9 @@
     "show_language_switch": true,
     "show_footer": true,
     "show_social_links_on_home": true,
-    "show_brand_name": true
+    "show_brand_name": true,
+    "show_theme_switch": true,
+    "show_search": true
   },
   "home_sections": [
     {
@@ -62,6 +64,33 @@
     {
       "id": "education",
       "enabled": true
+    },
+    {
+      "id": "news",
+      "enabled": true
     }
-  ]
+  ],
+  "dark_colors": {
+    "background": "#121412",
+    "surface": "#191c19",
+    "text": "#f2f3ef",
+    "muted": "#b8bdb5",
+    "line": "#343934",
+    "accent": "#8fc7d8",
+    "accent_secondary": "#7dd3c7",
+    "soft": "#1f2a27"
+  },
+  "theme": {
+    "default_mode": "system"
+  },
+  "analytics": {
+    "enabled": false,
+    "provider": "google_analytics",
+    "measurement_id": ""
+  },
+  "seo": {
+    "site_url": "https://yasinfanaei.github.io",
+    "structured_data_enabled": true,
+    "indexing_enabled": true
+  }
 }

@@ -17,9 +17,9 @@ if str(SCRIPT_DIR) not in sys.path:
 from validate_content import validate_site
 from validate_pages_config import validate_pages_config
 
-BASE_HTML_FILES = ["index.html", "research.html", "publications.html", "experience.html", "cv.html", "contact.html", "teaching.html"]
-HTML_FILES = BASE_HTML_FILES + [f"fa/{name}" for name in BASE_HTML_FILES]
-TEXT_SUFFIXES = {".html", ".js", ".json", ".yml", ".yaml", ".md", ".css"}
+BASE_HTML_FILES = ["index.html", "research.html", "publications.html", "experience.html", "cv.html", "contact.html", "teaching.html", "news.html", "search.html"]
+HTML_FILES = BASE_HTML_FILES + [f"fa/{name}" for name in BASE_HTML_FILES] + ["404.html"]
+TEXT_SUFFIXES = {".html", ".js", ".json", ".yml", ".yaml", ".md", ".css", ".xml", ".txt"}
 LONG_NUMBER = re.compile(r"(?<!\d)\d{10,12}(?!\d)")
 IRAN_MOBILE = re.compile(r"(?<!\d)0?9\d{2}[- ]?\d{3}[- ]?\d{4}(?!\d)")
 
@@ -82,6 +82,46 @@ def _check_profile_assets(root: Path, errors: list[str]) -> None:
                 errors.append(f'content/{locale}/profile.json: {key} points to missing file {value!r}')
 
 
+
+def _check_design_assets(root: Path, errors: list[str]) -> None:
+    design_path = root / "content" / "settings" / "design.json"
+    if not design_path.exists():
+        errors.append("content/settings/design.json is missing")
+        return
+    try:
+        design = json.loads(design_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"content/settings/design.json: invalid JSON: {exc}")
+        return
+    branding = design.get("branding") if isinstance(design, dict) else None
+    if not isinstance(branding, dict):
+        errors.append("content/settings/design.json: branding must be an object")
+        return
+    for key in ("logo", "favicon", "profile_image", "cv_pdf", "cv_docx", "open_graph_image"):
+        value = str(branding.get(key, "")).strip()
+        if value and not _is_external(value) and not (root / value.lstrip("/")).exists():
+            errors.append(f"content/settings/design.json: branding.{key} points to missing file {value!r}")
+
+def _check_seo_files(root: Path, errors: list[str]) -> None:
+    robots = root / "robots.txt"
+    sitemap = root / "sitemap.xml"
+    not_found = root / "404.html"
+    for path in (robots, sitemap, not_found):
+        if not path.exists():
+            errors.append(f"missing SEO/public file: {path.name}")
+    if robots.exists() and "Sitemap: https://yasinfanaei.github.io/sitemap.xml" not in robots.read_text(encoding="utf-8"):
+        errors.append("robots.txt: sitemap URL is missing or incorrect")
+    if sitemap.exists():
+        try:
+            tree = ET.fromstring(sitemap.read_text(encoding="utf-8"))
+            locs = [node.text or "" for node in tree.iter() if node.tag.endswith("}loc") or node.tag == "loc"]
+            for required in ("https://yasinfanaei.github.io/", "https://yasinfanaei.github.io/fa/", "https://yasinfanaei.github.io/news.html", "https://yasinfanaei.github.io/fa/search.html"):
+                if required not in locs:
+                    errors.append(f"sitemap.xml: missing {required}")
+        except ET.ParseError as exc:
+            errors.append(f"sitemap.xml: invalid XML: {exc}")
+
+
 def scan_docx_for_sensitive_numbers(path: Path) -> list[str]:
     problems: list[str] = []
     try:
@@ -125,9 +165,10 @@ def check_site(root: Path) -> list[str]:
         errors.append(".nojekyll is missing")
     _check_html_links(root, errors)
     _check_profile_assets(root, errors)
-    public_cv = root / "assets" / "uploads" / "Yasin_Fanaei_Shahroudi_CV.docx"
-    if public_cv.exists():
-        errors.extend(scan_docx_for_sensitive_numbers(public_cv))
+    _check_design_assets(root, errors)
+    _check_seo_files(root, errors)
+    for public_docx in (root / "assets" / "uploads").rglob("*.docx"):
+        errors.extend(scan_docx_for_sensitive_numbers(public_docx))
     _privacy_scan(root, errors)
     return errors
 

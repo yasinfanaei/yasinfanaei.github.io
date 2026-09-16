@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,re,sys,unittest
 ROOT=Path(__file__).resolve().parents[1]
-REQUIRED={'profile.json','education.json','research.json','publications.json','projects.json','experience.json','awards.json','skills.json','site.json'}
+REQUIRED={'profile.json','education.json','research.json','publications.json','projects.json','experience.json','awards.json','skills.json','site.json','news.json'}
 class ContentTests(unittest.TestCase):
  def test_content_files_parse_and_validate(self):
   sys.path.insert(0,str(ROOT/'scripts'));from validate_content import validate_site

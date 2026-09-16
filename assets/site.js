@@ -2,13 +2,15 @@
   'use strict';
 
   const pageRequirements = {
-    home: ['profile', 'education', 'research', 'site'],
+    home: ['profile', 'education', 'research', 'news', 'site'],
     research: ['profile', 'research', 'projects', 'site'],
     publications: ['profile', 'publications', 'site'],
     experience: ['profile', 'experience', 'awards', 'skills', 'site'],
     cv: ['profile', 'education', 'research', 'publications', 'projects', 'experience', 'awards', 'site'],
     contact: ['profile', 'site'],
-    teaching: ['profile', 'experience', 'site']
+    teaching: ['profile', 'experience', 'site'],
+    news: ['profile', 'news', 'site'],
+    search: ['profile', 'education', 'research', 'publications', 'projects', 'experience', 'awards', 'news', 'site']
   };
 
   const I18N = {
@@ -80,6 +82,57 @@
     return map[name] || (language === 'fa' ? persian['B Nazanin'] : english['Times New Roman']);
   }
 
+  const THEME_STORAGE_KEY = 'academic-theme';
+  const COLOR_VARS = { background: '--bg', surface: '--surface', text: '--text', muted: '--muted', line: '--line', accent: '--accent', accent_secondary: '--accent-2', soft: '--soft' };
+
+  function storedThemePreference() {
+    try {
+      const value = window.localStorage.getItem(THEME_STORAGE_KEY);
+      return ['system', 'light', 'dark'].includes(value) ? value : '';
+    } catch (_) { return ''; }
+  }
+
+  function resolveThemeMode(preference) {
+    if (preference === 'light' || preference === 'dark') return preference;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyPalette(palette) {
+    const style = document.documentElement.style;
+    Object.entries(COLOR_VARS).forEach(([key, variable]) => {
+      if (palette && palette[key]) style.setProperty(variable, palette[key]);
+    });
+  }
+
+  function applyThemeSettings(settings) {
+    const theme = (settings && settings.theme) || {};
+    const preference = storedThemePreference() || theme.default_mode || 'system';
+    const resolved = resolveThemeMode(preference);
+    document.documentElement.setAttribute('data-theme', resolved);
+    document.documentElement.setAttribute('data-theme-preference', preference);
+    applyPalette(resolved === 'dark' ? ((settings && settings.dark_colors) || {}) : ((settings && settings.colors) || {}));
+    return preference;
+  }
+
+  function setThemePreference(mode) {
+    const preference = ['system', 'light', 'dark'].includes(mode) ? mode : 'system';
+    try { window.localStorage.setItem(THEME_STORAGE_KEY, preference); } catch (_) { /* storage may be disabled */ }
+    applyThemeSettings(activeDesign);
+    const select = document.querySelector('[data-theme-select]');
+    if (select) select.value = preference;
+  }
+
+  function watchSystemTheme() {
+    if (!window.matchMedia) return;
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    const refresh = () => {
+      const preference = storedThemePreference() || ((activeDesign.theme || {}).default_mode || 'system');
+      if (preference === 'system') applyThemeSettings(activeDesign);
+    };
+    if (query.addEventListener) query.addEventListener('change', refresh);
+    else if (query.addListener) query.addListener(refresh);
+  }
+
   function ensureMeta(selector, attrs) {
     let el = document.head.querySelector(selector);
     if (!el) {
@@ -90,20 +143,67 @@
     return el;
   }
 
+  function ensureLink(selector, attrs) {
+    let el = document.head.querySelector(selector);
+    if (!el) { el = document.createElement('link'); document.head.appendChild(el); }
+    Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+    return el;
+  }
+
+  function canonicalUrl(page, language) {
+    const base = String(((activeDesign.seo || {}).site_url) || 'https://yasinfanaei.github.io').replace(/\/$/, '');
+    const filename = pageFilename(page);
+    const path = filename === 'index.html' ? '' : filename;
+    return language === 'fa' ? `${base}/fa/${path}` : `${base}/${path}`;
+  }
+
+  function updateStructuredData(profile, site, page) {
+    const enabled = (activeDesign.seo || {}).structured_data_enabled !== false;
+    let script = document.head.querySelector('script[data-academic-structured-data]');
+    if (!enabled || !profile || page !== 'home') { if (script) script.remove(); return; }
+    if (!script) { script = document.createElement('script'); script.type = 'application/ld+json'; script.setAttribute('data-academic-structured-data', ''); document.head.appendChild(script); }
+    const person = { '@type': 'Person', name: profile.name, url: canonicalUrl('home', locale) };
+    if (profile.headline) person.jobTitle = profile.headline;
+    if (profile.email) person.email = `mailto:${profile.email}`;
+    if (profile.affiliation) person.affiliation = { '@type': 'EducationalOrganization', name: profile.affiliation };
+    const sameAs = Object.values(profile.links || {}).filter(Boolean); if (sameAs.length) person.sameAs = sameAs;
+    const image = sharedAsset(profile, 'profile_image'); if (image) person.image = new URL(localAsset(image), window.location.href).href;
+    script.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'ProfilePage', url: canonicalUrl('home', locale), mainEntity: person });
+  }
+
+  function initAnalytics(settings) {
+    const analytics = (settings && settings.analytics) || {};
+    if (!analytics.enabled || analytics.provider !== 'google_analytics' || !/^G-[A-Z0-9]+$/i.test(analytics.measurement_id || '')) return;
+    if (document.querySelector('script[data-academic-analytics]')) return;
+    const id = analytics.measurement_id.toUpperCase();
+    const script = document.createElement('script'); script.async = true; script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`; script.setAttribute('data-academic-analytics',''); document.head.appendChild(script);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+    window.gtag('js', new Date()); window.gtag('config', id, { anonymize_ip: true });
+  }
+
   function updateMetadata(site, design, page) {
     if (!site) return;
     const current = Array.isArray(site.navigation) ? site.navigation.find((item) => item.id === page) : null;
-    const title = page === 'home' ? site.site_title : joinParts([current && current.label, site.site_title], ' | ');
+    const pageSeo = Array.isArray(site.page_seo) ? site.page_seo.find((item) => item.id === page) : null;
+    const title = (pageSeo && pageSeo.title) || (page === 'home' ? site.site_title : joinParts([current && current.label, site.site_title], ' | '));
+    const pageDescription = (pageSeo && pageSeo.description) || site.default_description || '';
     if (title) document.title = title;
     const description = ensureMeta('meta[name="description"]', { name: 'description' });
-    if (site.default_description) description.setAttribute('content', site.default_description);
+    if (pageDescription) description.setAttribute('content', pageDescription);
     const keywords = ensureMeta('meta[name="keywords"]', { name: 'keywords' });
     keywords.setAttribute('content', Array.isArray(site.keywords) ? site.keywords.join(', ') : (site.keywords || ''));
+    const indexingEnabled = !activeDesign.seo || activeDesign.seo.indexing_enabled !== false;
+    ensureMeta('meta[name="robots"]', { name: 'robots' }).setAttribute('content', indexingEnabled ? 'index,follow' : 'noindex,nofollow');
     ensureMeta('meta[property="og:title"]', { property: 'og:title' }).setAttribute('content', title || '');
-    ensureMeta('meta[property="og:description"]', { property: 'og:description' }).setAttribute('content', site.default_description || '');
+    ensureMeta('meta[property="og:description"]', { property: 'og:description' }).setAttribute('content', pageDescription);
     ensureMeta('meta[name="twitter:card"]', { name: 'twitter:card' }).setAttribute('content', 'summary_large_image');
     ensureMeta('meta[name="twitter:title"]', { name: 'twitter:title' }).setAttribute('content', title || '');
-    ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' }).setAttribute('content', site.default_description || '');
+    ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' }).setAttribute('content', pageDescription);
+    ensureLink('link[rel="canonical"]', { rel: 'canonical', href: canonicalUrl(page, locale) });
+    ensureLink('link[rel="alternate"][hreflang="en"]', { rel: 'alternate', hreflang: 'en', href: canonicalUrl(page, 'en') });
+    ensureLink('link[rel="alternate"][hreflang="fa"]', { rel: 'alternate', hreflang: 'fa', href: canonicalUrl(page, 'fa') });
+    ensureLink('link[rel="alternate"][hreflang="x-default"]', { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl(page, 'en') });
     const ogImage = design && design.branding && design.branding.open_graph_image;
     if (ogImage) {
       const resolved = new URL(localAsset(ogImage), window.location.href).href;
@@ -123,9 +223,7 @@
     activeDesign = settings || {};
     const root = document.documentElement;
     const style = root.style;
-    const colors = activeDesign.colors || {};
-    const colorVars = { background: '--bg', surface: '--surface', text: '--text', muted: '--muted', line: '--line', accent: '--accent', accent_secondary: '--accent-2', soft: '--soft' };
-    Object.entries(colorVars).forEach(([key, variable]) => { if (colors[key]) style.setProperty(variable, colors[key]); });
+    applyThemeSettings(activeDesign);
     const type = activeDesign.typography || {};
     style.setProperty('--font-en', fontStack(type.english_font, 'en'));
     style.setProperty('--font-fa', fontStack(type.persian_font, 'fa'));
@@ -181,6 +279,30 @@
     el.innerHTML = `<a class="language-switch" href="${attr(href)}" hreflang="${locale === 'fa' ? 'en' : 'fa'}">${t.langLabel}</a>`;
   }
 
+  function renderHeaderControls(page) {
+    const navTools = document.querySelector('.nav-tools');
+    if (!navTools) return;
+    let actions = navTools.querySelector('.header-actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'header-actions';
+      navTools.appendChild(actions);
+    }
+    const controls = activeDesign.controls || {};
+    const searchHref = locale === 'fa' ? 'search.html' : 'search.html';
+    const searchLabel = uiLabel('search_button', locale === 'fa' ? 'جستجو' : 'Search');
+    const search = controls.show_search === false ? '' : `<a class="search-link" href="${attr(searchHref)}" aria-label="${attr(searchLabel)}">⌕ <span>${escapeHtml(searchLabel)}</span></a>`;
+    const theme = activeDesign.theme || {};
+    const preference = storedThemePreference() || theme.default_mode || 'system';
+    const themeControl = controls.show_theme_switch === false ? '' : `<label class="theme-switch"><span class="visually-hidden">Theme</span><select data-theme-select aria-label="Theme"><option value="system">${escapeHtml(uiLabel('theme_system', locale === 'fa' ? 'سیستم' : 'System'))}</option><option value="light">${escapeHtml(uiLabel('theme_light', locale === 'fa' ? 'روشن' : 'Light'))}</option><option value="dark">${escapeHtml(uiLabel('theme_dark', locale === 'fa' ? 'تیره' : 'Dark'))}</option></select></label>`;
+    actions.innerHTML = `${search}${themeControl}`;
+    const select = actions.querySelector('[data-theme-select]');
+    if (select) {
+      select.value = preference;
+      select.addEventListener('change', (event) => setThemePreference(event.target.value));
+    }
+  }
+
   function renderGlobal(data, page) {
     const { profile, site } = data;
     activeSite = site || {};
@@ -191,7 +313,7 @@
       if (brand) {
         const logo = (activeDesign.branding || {}).logo;
         const showName = (activeDesign.controls || {}).show_brand_name !== false;
-        brand.innerHTML = `${logo ? `<img class="brand-logo" src="${attr(localAsset(logo))}" alt="">` : ''}${showName ? `<span>${escapeHtml(profile.name)}</span>` : ''}` || escapeHtml(profile.name);
+        brand.innerHTML = `${logo ? `<img class="brand-logo" src="${attr(localAsset(logo))}" alt="" decoding="async">` : ''}${showName ? `<span>${escapeHtml(profile.name)}</span>` : ''}` || escapeHtml(profile.name);
       }
     }
     if (site && Array.isArray(site.navigation)) {
@@ -203,7 +325,9 @@
       const announcement = slot('announcement'); if (announcement) { announcement.hidden = !(site.announcement_enabled && site.announcement); announcement.textContent = site.announcement || ''; }
     }
     updateMetadata(site, activeDesign, page);
+    updateStructuredData(profile, site, page);
     renderLanguageSwitch(page);
+    renderHeaderControls(page);
     document.querySelectorAll('[data-current-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
   }
 
@@ -216,10 +340,11 @@
   function renderHome(data) {
     const { profile, research, education } = data;
     if (profile && research) {
-      setHtml('profile-hero', `<div><p class="eyebrow">${escapeHtml(profile.eyebrow)}</p><h1>${escapeHtml(profile.name)}</h1><p class="lede">${escapeHtml(profile.short_bio)}</p><div class="hero-meta">${research.interests.map((x) => `<span class="tag">${escapeHtml(x)}</span>`).join('')}</div><div class="actions"><a class="button" href="research.html">${uiLabel('view_research', t.viewResearch)}</a>${sharedAsset(profile, 'cv_pdf') ? `<a class="button secondary" href="${attr(localAsset(sharedAsset(profile, 'cv_pdf')))}">${uiLabel('download_cv', t.downloadCv)}</a>` : ''}</div>${(activeDesign.controls || {}).show_social_links_on_home === false ? '' : socialLinks(profile, true)}</div>${sharedAsset(profile, 'profile_image') ? `<img class="portrait" src="${attr(localAsset(sharedAsset(profile, 'profile_image')))}" alt="${t.portraitAlt} ${attr(profile.name)}">` : ''}`);
+      setHtml('profile-hero', `<div><p class="eyebrow">${escapeHtml(profile.eyebrow)}</p><h1>${escapeHtml(profile.name)}</h1><p class="lede">${escapeHtml(profile.short_bio)}</p><div class="hero-meta">${research.interests.map((x) => `<span class="tag">${escapeHtml(x)}</span>`).join('')}</div><div class="actions"><a class="button" href="research.html">${uiLabel('view_research', t.viewResearch)}</a>${sharedAsset(profile, 'cv_pdf') ? `<a class="button secondary" href="${attr(localAsset(sharedAsset(profile, 'cv_pdf')))}">${uiLabel('download_cv', t.downloadCv)}</a>` : ''}</div>${(activeDesign.controls || {}).show_social_links_on_home === false ? '' : socialLinks(profile, true)}</div>${sharedAsset(profile, 'profile_image') ? `<img class="portrait" src="${attr(localAsset(sharedAsset(profile, 'profile_image')))}" alt="${t.portraitAlt} ${attr(profile.name)}" decoding="async" fetchpriority="high">` : ''}`);
       setHtml('about', `<p>${escapeHtml(profile.bio)}</p><p class="muted small">${t.publicOnly}</p>`);
       setHtml('research-themes', research.themes.map((theme) => `<article class="card"><h3>${escapeHtml(theme.title)}</h3><p>${escapeHtml(theme.description)}</p></article>`).join(''));
     }
+    renderHomeNews(data);
     if (education) setHtml('education-list', `<ul class="list-clean">${education.items.map((item) => { const details = joinParts([item.institution, item.period, item.gpa ? `${t.gpa} ${item.gpa}` : '']); return `<li><strong>${escapeHtml(item.degree)}</strong><br><span class="muted">${escapeHtml(details)}</span>${item.note ? `<br><span class="small muted">${escapeHtml(item.note)}</span>` : ''}</li>`; }).join('')}</ul>`);
   }
 
@@ -234,11 +359,203 @@
     if (projects) setHtml('projects', projects.items.map((x) => `<article class="entry"><h2 class="entry-title">${escapeHtml(x.title)}</h2><p class="entry-meta">${escapeHtml(joinParts([x.role, x.lead ? `${t.projectLead}: ${x.lead}` : '']))}</p><p>${escapeHtml(x.description)}</p>${x.url ? `<p><a href="${attr(x.url)}">${t.projectLink}</a></p>` : ''}</article>`).join(''));
   }
 
+  function publishedNewsItems(news) {
+    return ((news && news.items) || []).filter((item) => item.published !== false).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  }
+
+  function renderNewsEntry(item, compact) {
+    const linkOpen = item.url ? `<a href="${attr(item.url)}"${/^https?:/i.test(item.url) ? ' target="_blank" rel="noopener"' : ''}>` : '';
+    const linkClose = item.url ? '</a>' : '';
+    return `<article class="${compact ? 'card news-card' : 'entry news-entry'}" id="${attr(item.id || '')}"><div class="entry-heading-row"><h2 class="${compact ? 'news-card-title' : 'entry-title'}">${linkOpen}${escapeHtml(item.title || '')}${linkClose}</h2>${item.featured ? `<span class="status-pill">${t.featured}</span>` : ''}</div><p class="entry-meta">${escapeHtml(joinParts([item.date, item.category]))}</p>${item.summary ? `<p>${escapeHtml(item.summary)}</p>` : ''}</article>`;
+  }
+
+  function renderHomeNews(data) {
+    const items = publishedNewsItems(data.news);
+    const featured = items.filter((item) => item.featured);
+    const selected = (featured.length ? featured : items).slice(0, 3);
+    setHtml('home-news-list', selected.length ? selected.map((item) => renderNewsEntry(item, true)).join('') : `<p class="muted">${escapeHtml(uiLabel('news_empty', locale === 'fa' ? 'هنوز خبر عمومی ثبت نشده است.' : 'No public updates have been added yet.'))}</p>`);
+  }
+
+  function renderNews(data) {
+    const news = data.news;
+    if (!news) return;
+    setText('news-intro', news.intro || '');
+    const items = publishedNewsItems(news);
+    setHtml('news-list', items.length ? items.map((item) => renderNewsEntry(item, false)).join('') : `<p class="muted">${escapeHtml(uiLabel('news_empty', locale === 'fa' ? 'هنوز خبر عمومی ثبت نشده است.' : 'No public updates have been added yet.'))}</p>`);
+  }
+
+  function normalizeSearchText(value) {
+    return String(value == null ? '' : value).toLocaleLowerCase(locale === 'fa' ? 'fa' : 'en').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildSearchIndex(data) {
+    const results = [];
+    const add = (type, title, text, href, keywords) => {
+      if (!title) return;
+      results.push({ type, title, text: text || '', href, haystack: normalizeSearchText([title, text, ...(keywords || [])].filter(Boolean).join(' ')) });
+    };
+    const p = data.profile || {};
+    add('profile', p.name, [p.headline, p.affiliation, p.bio, p.short_bio].filter(Boolean).join(' '), 'index.html');
+    ((data.education && data.education.items) || []).forEach((x) => add('education', x.degree, [x.institution, x.period, x.note].filter(Boolean).join(' '), 'cv.html'));
+    ((data.research && data.research.themes) || []).forEach((x) => add('research', x.title, x.description, 'research.html'));
+    const thesis = data.research && data.research.thesis; if (thesis) add('research', thesis.title, [thesis.degree, thesis.institution, thesis.note].filter(Boolean).join(' '), 'research.html');
+    ((data.publications && data.publications.items) || []).forEach((x) => add('publication', x.official_english_title || x.title, [x.title_fa, (x.authors || []).join(' '), x.venue, x.venue_english_rendering, x.year, x.abstract].filter(Boolean).join(' '), `publications.html#${x.id}`, x.keywords || []));
+    ((data.projects && data.projects.items) || []).forEach((x) => add('project', x.title, [x.description, x.role, x.lead].filter(Boolean).join(' '), 'research.html'));
+    ((data.experience && data.experience.items) || []).forEach((x) => add('experience', x.title, [x.organization, x.period, x.description].filter(Boolean).join(' '), 'experience.html'));
+    ((data.awards && data.awards.items) || []).forEach((x) => add('award', x.title, [x.issuer, x.year, x.description].filter(Boolean).join(' '), 'experience.html'));
+    publishedNewsItems(data.news).forEach((x) => add('news', x.title, [x.summary, x.category, x.date].filter(Boolean).join(' '), `news.html#${x.id}`));
+    return results;
+  }
+
+  function renderSearch(data) {
+    const input = slot('search-input');
+    const output = slot('search-results');
+    if (!input || !output) return;
+    const index = buildSearchIndex(data);
+    const params = new URLSearchParams(window.location.search);
+    input.placeholder = uiLabel('search_placeholder', locale === 'fa' ? 'جستجو…' : 'Search…');
+    input.value = params.get('q') || '';
+    const draw = () => {
+      const query = normalizeSearchText(input.value);
+      if (!query) { output.innerHTML = ''; return; }
+      const terms = query.split(' ').filter(Boolean);
+      const matches = index.filter((item) => terms.every((term) => item.haystack.includes(term)));
+      output.innerHTML = matches.length ? matches.map((item) => `<article class="search-result"><p class="eyebrow">${escapeHtml(item.type)}</p><h2 class="entry-title"><a href="${attr(item.href)}">${escapeHtml(item.title)}</a></h2>${item.text ? `<p>${escapeHtml(item.text)}</p>` : ''}</article>`).join('') : `<p class="muted">${escapeHtml(uiLabel('search_no_results', locale === 'fa' ? 'نتیجه‌ای یافت نشد.' : 'No matching results.'))}</p>`;
+    };
+    input.addEventListener('input', draw);
+    draw();
+    requestAnimationFrame(() => input.focus({ preventScroll: true }));
+  }
+
   function statusLabel(status) { return t.statuses[status] || status || ''; }
+
+  function publicationTypeLabel(type) {
+    const en = { journal: 'Journal article', conference: 'Conference paper', working_paper: 'Working paper', book_chapter: 'Book chapter', report: 'Research report' };
+    const fa = { journal: 'مقاله مجله', conference: 'مقاله کنفرانسی', working_paper: 'مقاله در دست کار', book_chapter: 'فصل کتاب', report: 'گزارش پژوهشی' };
+    return (locale === 'fa' ? fa : en)[type] || type || '';
+  }
+
+  function publicationCitation(item) {
+    const authors = (item.authors || []).join(locale === 'fa' ? '، ' : ', ');
+    const title = item.official_english_title || item.title || '';
+    const venue = item.venue_english_rendering || item.venue || '';
+    const bibliographic = [item.volume ? `vol. ${item.volume}` : '', item.issue ? `no. ${item.issue}` : '', item.pages ? `pp. ${item.pages}` : ''].filter(Boolean).join(', ');
+    const doi = item.doi ? `https://doi.org/${item.doi}` : '';
+    return [authors, title, venue, bibliographic, item.year, doi].filter(Boolean).join('. ').replace(/\.\s*\./g, '.');
+  }
+
+  function bibtexEscape(value) { return String(value || '').replace(/[{}]/g, ''); }
+  function publicationBibtex(item) {
+    const type = item.type === 'journal' ? 'article' : (item.type === 'book_chapter' ? 'incollection' : 'misc');
+    const firstAuthor = (item.authors && item.authors[0]) || 'Fanaei';
+    const surname = firstAuthor.trim().split(/\s+/).slice(-1)[0].replace(/[^A-Za-z0-9]/g, '') || 'Fanaei';
+    const yearDigits = String(item.year || '').match(/\d{4}/);
+    const titleWord = String(item.official_english_title || item.title || 'work').split(/\s+/)[0].replace(/[^A-Za-z0-9]/g, '') || 'work';
+    const key = `${surname}${yearDigits ? yearDigits[0] : ''}${titleWord}`;
+    const fields = [
+      ['title', item.official_english_title || item.title],
+      ['author', (item.authors || []).join(' and ')],
+      ['year', item.year],
+      [type === 'article' ? 'journal' : 'howpublished', item.venue_english_rendering || item.venue],
+      ['volume', item.volume], ['number', item.issue], ['pages', item.pages], ['doi', item.doi], ['url', item.url || item.pdf]
+    ].filter(([, value]) => value);
+    return `@${type}{${key},\n${fields.map(([name, value]) => `  ${name} = {${bibtexEscape(value)}}`).join(',\n')}\n}`;
+  }
+
+  function publicationRis(item) {
+    const type = item.type === 'journal' ? 'JOUR' : (item.type === 'conference' ? 'CPAPER' : 'GEN');
+    const lines = [`TY  - ${type}`, `TI  - ${item.official_english_title || item.title || ''}`];
+    (item.authors || []).forEach((author) => lines.push(`AU  - ${author}`));
+    if (item.year) lines.push(`PY  - ${item.year}`);
+    if (item.venue_english_rendering || item.venue) lines.push(`T2  - ${item.venue_english_rendering || item.venue}`);
+    if (item.volume) lines.push(`VL  - ${item.volume}`);
+    if (item.issue) lines.push(`IS  - ${item.issue}`);
+    if (item.pages) lines.push(`SP  - ${item.pages}`);
+    if (item.doi) lines.push(`DO  - ${item.doi}`);
+    if (item.url) lines.push(`UR  - ${item.url}`);
+    lines.push('ER  -');
+    return lines.join('\n');
+  }
+
+  async function copyText(text, button) {
+    let copied = false;
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); copied = true; }
+    } catch (_) { copied = false; }
+    if (!copied) {
+      const area = document.createElement('textarea'); area.value = text; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.opacity = '0'; document.body.appendChild(area); area.select();
+      try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+      area.remove();
+    }
+    if (button && copied) {
+      const before = button.textContent; button.textContent = uiLabel('citation_copied', locale === 'fa' ? 'کپی شد' : 'Copied');
+      window.setTimeout(() => { button.textContent = before; }, 1200);
+    }
+    return copied;
+  }
+
+  function filterPublications(items, state) {
+    const query = normalizeSearchText(state.query || '');
+    const terms = query.split(' ').filter(Boolean);
+    return (items || []).filter((item) => {
+      const haystack = normalizeSearchText([item.title, item.official_english_title, item.title_fa, (item.authors || []).join(' '), item.venue, item.venue_english_rendering, item.year, item.abstract, (item.keywords || []).join(' ')].filter(Boolean).join(' '));
+      return (!terms.length || terms.every((term) => haystack.includes(term))) && (!state.type || item.type === state.type) && (!state.status || item.status === state.status) && (!state.year || item.year === state.year);
+    });
+  }
+
+  function publicationResources(item) {
+    const links = [];
+    if (item.doi) links.push(`<a href="https://doi.org/${attr(item.doi)}" target="_blank" rel="noopener">DOI</a>`);
+    if (item.url) links.push(`<a href="${attr(item.url)}" target="_blank" rel="noopener">${escapeHtml(t.publicationLink)}</a>`);
+    if (item.pdf) links.push(`<a href="${attr(localAsset(item.pdf))}">${escapeHtml(uiLabel('pdf_label', 'PDF'))}</a>`);
+    if (item.data_url) links.push(`<a href="${attr(item.data_url)}" target="_blank" rel="noopener">${escapeHtml(uiLabel('data_label', locale === 'fa' ? 'داده' : 'Data'))}</a>`);
+    if (item.code_url) links.push(`<a href="${attr(item.code_url)}" target="_blank" rel="noopener">${escapeHtml(uiLabel('code_label', locale === 'fa' ? 'کد' : 'Code'))}</a>`);
+    if (item.replication_url) links.push(`<a href="${attr(item.replication_url)}" target="_blank" rel="noopener">${escapeHtml(uiLabel('replication_label', locale === 'fa' ? 'بسته بازتولید' : 'Replication'))}</a>`);
+    return links.length ? `<p class="entry-links publication-resource-links">${links.join('')}</p>` : '';
+  }
+
+  function renderPublicationItem(item) {
+    const citation = encodeURIComponent(publicationCitation(item));
+    const bibtex = encodeURIComponent(publicationBibtex(item));
+    const ris = encodeURIComponent(publicationRis(item));
+    const keywords = (item.keywords || []).length ? `<p class="publication-keywords"><strong>${escapeHtml(uiLabel('keywords_label', locale === 'fa' ? 'کلیدواژه‌ها' : 'Keywords'))}:</strong> ${item.keywords.map(escapeHtml).join(locale === 'fa' ? '، ' : ', ')}</p>` : '';
+    const abstract = item.abstract ? `<details class="publication-abstract"><summary>${escapeHtml(uiLabel('abstract_label', locale === 'fa' ? 'چکیده' : 'Abstract'))}</summary><p>${escapeHtml(item.abstract)}</p></details>` : '';
+    return `<article class="entry publication-entry" id="${attr(item.id || '')}"><div class="entry-heading-row"><h2 class="entry-title">${escapeHtml(item.official_english_title || item.title)}</h2>${item.featured ? `<span class="status-pill">${t.featured}</span>` : ''}</div><p class="entry-meta">${escapeHtml(joinParts([(item.authors || []).join(locale === 'fa' ? '، ' : '; '), item.year, statusLabel(item.status)]))}</p>${item.venue_english_rendering || item.venue ? `<p><strong>${t.venue}</strong> ${escapeHtml(item.venue_english_rendering || item.venue)}</p>` : ''}${item.corresponding_author ? `<p class="small muted">${t.corresponding} ${escapeHtml(item.corresponding_author)}</p>` : ''}${abstract}${keywords}${publicationResources(item)}<div class="citation-actions"><button type="button" class="citation-button" data-copy-text="${attr(citation)}">${escapeHtml(uiLabel('citation_copy', locale === 'fa' ? 'کپی ارجاع' : 'Copy citation'))}</button><button type="button" class="citation-button" data-copy-text="${attr(bibtex)}">${escapeHtml(uiLabel('citation_bibtex', 'BibTeX'))}</button><button type="button" class="citation-button" data-copy-text="${attr(ris)}">${escapeHtml(uiLabel('citation_ris', 'RIS'))}</button></div>${item.note ? `<p class="small muted">${escapeHtml(item.note)}</p>` : ''}</article>`;
+  }
+
+  function wirePublicationCopyButtons(container) {
+    container.querySelectorAll('[data-copy-text]').forEach((button) => button.addEventListener('click', () => copyText(decodeURIComponent(button.dataset.copyText || ''), button)));
+  }
+
+  function renderPublicationList(publications, state) {
+    const container = slot('publication-list'); if (!container) return;
+    const items = filterPublications(publications.items || [], state);
+    const types = [...new Set(items.map((x) => x.type))];
+    const body = types.map((type) => {
+      const group = items.filter((x) => x.type === type);
+      return `<section class="publication-group"><p class="eyebrow">${escapeHtml(publicationTypeLabel(type))}</p>${group.map(renderPublicationItem).join('')}</section>`;
+    }).join('');
+    container.innerHTML = (body || `<p class="muted">${escapeHtml(uiLabel('search_no_results', locale === 'fa' ? 'نتیجه‌ای یافت نشد.' : 'No matching results.'))}</p>`) + `<div class="note small">${t.missingBib}</div>`;
+    wirePublicationCopyButtons(container);
+  }
+
+  function renderPublicationTools(publications) {
+    const tools = slot('publication-tools'); if (!tools) return;
+    const types = [...new Set((publications.items || []).map((x) => x.type).filter(Boolean))];
+    const statuses = [...new Set((publications.items || []).map((x) => x.status).filter(Boolean))];
+    const years = [...new Set((publications.items || []).map((x) => x.year).filter(Boolean))].sort().reverse();
+    const state = { query: '', type: '', status: '', year: '' };
+    tools.innerHTML = `<div class="publication-tools"><label class="filter-search"><span class="visually-hidden">${escapeHtml(uiLabel('publication_search_placeholder', 'Search publications'))}</span><input type="search" data-pub-filter="query" placeholder="${attr(uiLabel('publication_search_placeholder', locale === 'fa' ? 'جستجو در انتشارات…' : 'Search publications…'))}"></label><select data-pub-filter="type" aria-label="Type"><option value="">${escapeHtml(uiLabel('publication_all_types', locale === 'fa' ? 'همه انواع' : 'All types'))}</option>${types.map((x) => `<option value="${attr(x)}">${escapeHtml(publicationTypeLabel(x))}</option>`).join('')}</select><select data-pub-filter="status" aria-label="Status"><option value="">${escapeHtml(uiLabel('publication_all_statuses', locale === 'fa' ? 'همه وضعیت‌ها' : 'All statuses'))}</option>${statuses.map((x) => `<option value="${attr(x)}">${escapeHtml(statusLabel(x))}</option>`).join('')}</select><select data-pub-filter="year" aria-label="Year"><option value="">${escapeHtml(uiLabel('publication_all_years', locale === 'fa' ? 'همه سال‌ها' : 'All years'))}</option>${years.map((x) => `<option value="${attr(x)}">${escapeHtml(x)}</option>`).join('')}</select><button type="button" class="filter-clear">${escapeHtml(uiLabel('publication_clear_filters', locale === 'fa' ? 'پاک‌کردن فیلترها' : 'Clear filters'))}</button></div>`;
+    const redraw = () => renderPublicationList(publications, state);
+    tools.querySelectorAll('[data-pub-filter]').forEach((control) => control.addEventListener('input', () => { state[control.dataset.pubFilter] = control.value; redraw(); }));
+    const clear = tools.querySelector('.filter-clear'); if (clear) clear.addEventListener('click', () => { Object.keys(state).forEach((key) => { state[key] = ''; }); tools.querySelectorAll('[data-pub-filter]').forEach((control) => { control.value = ''; }); redraw(); });
+    redraw();
+  }
+
   function renderPublications(data) {
-    const p = data.publications; if (!p) return; setText('publications-intro', p.intro);
-    const groups = [['journal', t.groups.journal], ['conference', t.groups.conference]];
-    setHtml('publication-list', groups.map(([type, label]) => { const items=p.items.filter((x)=>x.type===type); if(!items.length)return ''; return `<section class="publication-group"><p class="eyebrow">${label}</p>${items.map((x)=>`<article class="entry"><div class="entry-heading-row"><h2 class="entry-title">${escapeHtml(x.official_english_title || x.title)}</h2>${x.featured?`<span class="status-pill">${t.featured}</span>`:''}</div><p class="entry-meta">${escapeHtml(joinParts([x.authors.join(locale==='fa' ? '، ' : '; '),x.year,statusLabel(x.status)]))}</p>${x.venue_english_rendering||x.venue?`<p><strong>${t.venue}</strong> ${escapeHtml(x.venue_english_rendering||x.venue)}</p>`:''}${x.corresponding_author?`<p class="small muted">${t.corresponding} ${escapeHtml(x.corresponding_author)}</p>`:''}${x.doi||x.url?`<p class="entry-links">${x.doi?`<a href="https://doi.org/${attr(x.doi)}">DOI</a>`:''}${x.url?`<a href="${attr(x.url)}">${t.publicationLink}</a>`:''}</p>`:''}${x.note?`<p class="small muted">${escapeHtml(x.note)}</p>`:''}</article>`).join('')}</section>`; }).join('')+`<div class="note small">${t.missingBib}</div>`);
+    const p = data.publications; if (!p) return;
+    setText('publications-intro', p.intro);
+    renderPublicationTools(p);
   }
 
   function renderExperience(data) {
@@ -276,6 +593,8 @@
         Promise.all(keys.map(async(key)=>[key,await loadJson(contentPath(key))]))
       ]);
       applyDesignSettings(design);
+      initAnalytics(design);
+      watchSystemTheme();
       const data=Object.fromEntries(values);
       renderGlobal(data,page);
       if(page==='home')renderHome(data);
@@ -285,10 +604,12 @@
       if(page==='cv')renderCv(data);
       if(page==='contact')renderContact(data);
       if(page==='teaching')renderTeaching(data);
+      if(page==='news')renderNews(data);
+      if(page==='search')renderSearch(data);
       if(page==='home')applyHomeSections(design);
       document.documentElement.classList.add('content-ready');
     }catch(error){showLoadError(error);}
   }
 
-  window.AcademicSite={loadJson,escapeHtml,applyDesignSettings,applyHomeSections,updateMetadata,init};document.addEventListener('DOMContentLoaded',init);
+  window.AcademicSite={loadJson,escapeHtml,applyDesignSettings,applyHomeSections,applyThemeSettings,resolveThemeMode,setThemePreference,renderHeaderControls,buildSearchIndex,renderSearch,renderNews,renderHomeNews,renderPublicationTools,filterPublications,publicationCitation,publicationBibtex,publicationRis,copyText,updateMetadata,updateStructuredData,initAnalytics,init};document.addEventListener('DOMContentLoaded',init);
 }());

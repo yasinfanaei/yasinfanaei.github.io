@@ -8,7 +8,10 @@
       "title_fa": "تحلیل تجربی اثرات پول شویی بر شاخص های توسعه اقتصادی اجتماعی",
       "type": "journal",
       "status": "accepted",
-      "authors": ["Majid Maddah", "Yasin Fanaei Shahroudi"],
+      "authors": [
+        "Majid Maddah",
+        "Yasin Fanaei Shahroudi"
+      ],
       "corresponding_author": "Majid Maddah",
       "venue": "مطالعات بین رشته ای دانش راهبردی اقتصاد دفاع ملی",
       "venue_english_rendering": "Interdisciplinary Studies of Strategic Knowledge in National Defense Economics",
@@ -16,7 +19,16 @@
       "doi": "",
       "url": "",
       "note": "Venue English wording is a descriptive rendering, not a claimed official journal title.",
-      "featured": true
+      "featured": true,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "corruption-money-laundering-countries",
@@ -25,7 +37,10 @@
       "title_fa": "نقش فساد در پولشویی کشورها",
       "type": "conference",
       "status": "published_or_accepted",
-      "authors": ["Yasin Fanaei Shahroudi", "Majid Maddah"],
+      "authors": [
+        "Yasin Fanaei Shahroudi",
+        "Majid Maddah"
+      ],
       "corresponding_author": "Yasin Fanaei Shahroudi",
       "venue": "چهارمین کنگره بین المللی مدیریت، اقتصاد، علوم انسانی و توسعه کسب و کار",
       "venue_english_rendering": "4th International Congress of Management, Economics, Humanities and Business Development",
@@ -33,7 +48,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "determinants-money-laundering-corruption-informal-economy",
@@ -42,7 +66,10 @@
       "title_fa": "تعیین کننده های پولشویی با تأکید بر نقش فساد و اقتصاد غیررسمی",
       "type": "journal",
       "status": "published_or_accepted",
-      "authors": ["Majid Maddah", "Yasin Fanaei Shahroudi"],
+      "authors": [
+        "Majid Maddah",
+        "Yasin Fanaei Shahroudi"
+      ],
       "corresponding_author": "Majid Maddah",
       "venue": "اقتصاد دفاع ملی",
       "venue_english_rendering": "National Defense Economics",
@@ -50,7 +77,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": true
+      "featured": true,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "good-governance-tourism-silk-road",
@@ -59,7 +95,10 @@
       "title_fa": "نقش حکمرانی خوب در توسعه گردشگری با تأکید بر کشورهای واقع در جاده ابریشم",
       "type": "conference",
       "status": "published_or_accepted",
-      "authors": ["Majid Maddah", "Yasin Fanaei Shahroudi"],
+      "authors": [
+        "Majid Maddah",
+        "Yasin Fanaei Shahroudi"
+      ],
       "corresponding_author": "Majid Maddah",
       "venue": "اولین کنفرانس بین المللی گردشگری سمنان: جاده ابریشم، فرصت ها و چشم اندازها",
       "venue_english_rendering": "1st Semnan International Tourism Conference: Silk Road, Opportunities and Prospects",
@@ -67,7 +106,16 @@
       "doi": "",
       "url": "",
       "note": "",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     },
     {
       "id": "corruption-government-expenditure-current-account-mena",
@@ -76,7 +124,10 @@
       "title_fa": "نقش فساد و مخارج دولت در وضعیت تراز حساب جاری: شواهدی از منطقه منا",
       "type": "conference",
       "status": "published_or_accepted",
-      "authors": ["Majid Maddah", "Yasin Fanaei Shahroudi"],
+      "authors": [
+        "Majid Maddah",
+        "Yasin Fanaei Shahroudi"
+      ],
       "corresponding_author": "Majid Maddah",
       "venue": "اولین همایش ملی بازسازی زیر ساخت ها و رفع ناترازی ها در راستای سرمایه گذاری برای تولید",
       "venue_english_rendering": "1st National Conference on Infrastructure Reconstruction and Resolving Imbalances toward Investment for Production",
@@ -84,7 +135,16 @@
       "doi": "",
       "url": "",
       "note": "The supplied CV does not clearly state a year for this conference paper.",
-      "featured": false
+      "featured": false,
+      "abstract": "",
+      "keywords": [],
+      "volume": "",
+      "issue": "",
+      "pages": "",
+      "pdf": "",
+      "data_url": "",
+      "code_url": "",
+      "replication_url": ""
     }
   ]
 }
