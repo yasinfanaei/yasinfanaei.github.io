@@ -18,7 +18,7 @@ Pages CMS edits two parallel content trees:
 
 Each language has:
 
-- `profile.json` — name, affiliation, public email, image, CV and academic profile links
+- `profile.json` — name, affiliation, public email, biographies and academic profile links
 - `education.json` — education
 - `research.json` — research interests, themes and thesis
 - `publications.json` — journal/conference outputs
@@ -26,9 +26,30 @@ Each language has:
 - `experience.json` — research/professional/service experience
 - `awards.json` — honors
 - `skills.json` — documented training and tools
-- `site.json` — navigation, SEO text, footer and announcements
+- `site.json` — navigation, SEO text, footer, announcements and editable interface/page labels
 
 The dashboard schema is `.pages.yml`. Shared uploads are stored in `assets/uploads/`.
+
+## No-code dashboard controls
+
+The dashboard is designed so routine site management does not require editing HTML, CSS, or JavaScript.
+
+**Design & Branding — ظاهر و تنظیمات اصلی** controls shared settings for both languages:
+
+- profile photo, CV PDF, CV Word file, header logo, favicon and social-preview image
+- background, surface, text, border, accent and soft-background colors
+- English and Persian font choices, base font size, line height and hero-title scale
+- content width, section spacing, hero spacing/gap, portrait size/side/radius, card/button radius and navigation gap
+- sticky header, shadows, language switch, footer, homepage academic links and brand-name visibility
+- homepage section visibility and order for Hero, About, Research and Education
+
+The **English → Site Settings** and **فارسی → تنظیمات سایت** editors control each locale's navigation order/visibility, SEO title/description/keywords, footer text, announcement, and visible interface/page labels.
+
+The **Media** section stores general uploads in `assets/uploads/`. For the profile photo and CV files, use **Design & Branding** so one upload updates both English and Persian pages.
+
+Pages CMS saves changes as Git commits. GitHub Pages then republishes the site automatically from `main`.
+
+This is a managed design system rather than a free-form page builder: the exposed content, media, appearance and layout controls are no-code, while inventing a completely new component type or application feature still requires a one-time code change.
 
 ## Verified academic profile links
 
@@ -74,7 +95,7 @@ python scripts/check_site.py
 node --check assets/site.js
 ```
 
-The checks cover both locales, Pages CMS paths, internal files, profile/CV assets, privacy scanning, and bilingual page structure.
+The checks cover both locales, shared design settings, Pages CMS paths, internal files, profile/CV/branding assets, privacy scanning, and bilingual page structure.
 
 ## Publication-data rule
 

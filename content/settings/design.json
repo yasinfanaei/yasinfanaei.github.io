@@ -1,0 +1,67 @@
+{
+  "branding": {
+    "logo": "",
+    "favicon": "assets/favicon.svg",
+    "profile_image": "assets/uploads/profile.jpeg",
+    "cv_pdf": "assets/uploads/Yasin_Fanaei_Shahroudi_CV.pdf",
+    "cv_docx": "assets/uploads/Yasin_Fanaei_Shahroudi_CV.docx",
+    "open_graph_image": "assets/uploads/profile.jpeg"
+  },
+  "colors": {
+    "background": "#fbfbf8",
+    "surface": "#ffffff",
+    "text": "#171717",
+    "muted": "#666963",
+    "line": "#e4e5df",
+    "accent": "#164e63",
+    "accent_secondary": "#0f766e",
+    "soft": "#eef5f3"
+  },
+  "typography": {
+    "english_font": "Times New Roman",
+    "persian_font": "B Nazanin",
+    "base_font_size": 16,
+    "english_line_height": 1.68,
+    "persian_line_height": 1.9,
+    "hero_title_scale": 1.0
+  },
+  "layout": {
+    "max_width": 1100,
+    "section_spacing": 62,
+    "hero_space_top": 88,
+    "hero_space_bottom": 66,
+    "hero_gap": 64,
+    "portrait_size": 100,
+    "portrait_radius": 18,
+    "button_radius": 8,
+    "card_radius": 14,
+    "nav_gap": 20,
+    "portrait_side": "automatic"
+  },
+  "controls": {
+    "sticky_header": true,
+    "show_shadows": true,
+    "show_language_switch": true,
+    "show_footer": true,
+    "show_social_links_on_home": true,
+    "show_brand_name": true
+  },
+  "home_sections": [
+    {
+      "id": "hero",
+      "enabled": true
+    },
+    {
+      "id": "about",
+      "enabled": true
+    },
+    {
+      "id": "research",
+      "enabled": true
+    },
+    {
+      "id": "education",
+      "enabled": true
+    }
+  ]
+}

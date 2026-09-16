@@ -4,6 +4,16 @@
 
 Pages CMS now has two parallel editor sets. When a factual record changes (degree, publication status, year, affiliation), update the corresponding record in both language sections so the two versions remain aligned.
 
+
+## Dashboard workflow
+
+- Use **Design & Branding** to replace the public profile photo, CV PDF/DOCX, logo, favicon and social-preview image once for both languages.
+- Use **English → Site Settings** and **فارسی → تنظیمات سایت** for navigation, SEO, announcements, footer text and page/interface headings.
+- Use the locale content sections for academic records and translations.
+- Use **Media** for other public images/documents. Uploading a file alone does not create a visible page link unless a dashboard field points to that file.
+- Keep the stable IDs of existing records/navigation items unless you intentionally update the corresponding behavior.
+- After saving, allow GitHub Pages a short time to redeploy before checking the public site.
+
 ## Academic profile links
 
 Currently configured:

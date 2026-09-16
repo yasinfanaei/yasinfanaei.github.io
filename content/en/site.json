@@ -3,12 +3,86 @@
   "default_description": "Academic website of Yasin Fanaei Shahroudi, PhD student in Public Economics at Semnan University.",
   "footer_label": "Academic website",
   "navigation": [
-    {"id": "home", "label": "Home", "href": "index.html"},
-    {"id": "research", "label": "Research", "href": "research.html"},
-    {"id": "publications", "label": "Publications", "href": "publications.html"},
-    {"id": "experience", "label": "Experience", "href": "experience.html"},
-    {"id": "cv", "label": "CV", "href": "cv.html"},
-    {"id": "contact", "label": "Contact", "href": "contact.html"}
+    {
+      "id": "home",
+      "label": "Home",
+      "href": "index.html",
+      "enabled": true
+    },
+    {
+      "id": "research",
+      "label": "Research",
+      "href": "research.html",
+      "enabled": true
+    },
+    {
+      "id": "publications",
+      "label": "Publications",
+      "href": "publications.html",
+      "enabled": true
+    },
+    {
+      "id": "experience",
+      "label": "Experience",
+      "href": "experience.html",
+      "enabled": true
+    },
+    {
+      "id": "cv",
+      "label": "CV",
+      "href": "cv.html",
+      "enabled": true
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "href": "contact.html",
+      "enabled": true
+    }
   ],
-  "announcement": ""
+  "announcement": "",
+  "keywords": [
+    "Public Economics",
+    "Economics",
+    "Research"
+  ],
+  "announcement_enabled": false,
+  "ui": {
+    "home_about_eyebrow": "About",
+    "home_about_title": "Research profile",
+    "home_research_eyebrow": "Selected research themes",
+    "home_research_title": "Current areas of work",
+    "home_education_eyebrow": "Education",
+    "home_education_title": "Academic background",
+    "research_eyebrow": "Research",
+    "research_title": "Research agenda",
+    "research_areas_label": "Research areas",
+    "research_thesis_label": "Thesis",
+    "research_projects_label": "Research project",
+    "publications_eyebrow": "Research output",
+    "publications_title": "Publications & conference papers",
+    "experience_eyebrow": "Experience",
+    "experience_title": "Experience & academic service",
+    "experience_lede": "Research, professional, academic-service, honors, and documented technical training.",
+    "experience_honors_label": "Honors",
+    "experience_training_label": "Selected technical training",
+    "contact_eyebrow": "Contact",
+    "contact_title": "Contact",
+    "contact_lede": "Professional contact information and academic profiles.",
+    "contact_profiles_label": "Academic profiles",
+    "teaching_eyebrow": "Teaching",
+    "teaching_title": "Teaching & instruction",
+    "teaching_lede": "Instruction activities currently documented in the supplied materials.",
+    "cv_education_label": "Education",
+    "cv_interests_label": "Research interests",
+    "cv_publications_label": "Selected publications",
+    "cv_projects_label": "Research projects",
+    "cv_service_label": "Academic service & honors",
+    "cv_note": "Public CV content intentionally excludes sensitive identity information. Bibliographic fields not supported by the supplied materials remain blank until verified.",
+    "view_research": "View research",
+    "download_cv": "Download CV",
+    "download_pdf": "Download PDF",
+    "download_docx": "Download DOCX",
+    "print": "Print this page"
+  }
 }
