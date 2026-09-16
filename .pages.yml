@@ -1,0 +1,1001 @@
+media:
+  input: assets/uploads
+  output: assets/uploads
+  rename: safe
+  categories:
+  - image
+  - document
+settings:
+  content:
+    merge: true
+content:
+- name: english
+  label: English
+  type: group
+  items:
+  - name: en_profile
+    label: Profile & Contact
+    type: file
+    path: content/en/profile.json
+    format: json
+    fields:
+    - name: name
+      label: Full name
+      type: string
+      required: true
+    - name: headline
+      label: Academic headline
+      type: string
+      required: true
+    - name: affiliation
+      label: Affiliation
+      type: string
+      required: true
+    - name: location
+      label: Public location
+      type: string
+    - name: email
+      label: Public email
+      type: string
+      required: true
+    - name: eyebrow
+      label: Home-page eyebrow
+      type: string
+    - name: bio
+      label: Research profile
+      type: text
+    - name: short_bio
+      label: Short biography
+      type: text
+    - name: profile_image
+      label: Profile image
+      type: image
+      options:
+        categories:
+        - image
+        extensions:
+        - jpg
+        - jpeg
+        - png
+        - webp
+        rename: safe
+    - name: cv_pdf
+      label: CV (PDF)
+      type: file
+      options:
+        extensions:
+        - pdf
+        rename: safe
+    - name: cv_docx
+      label: CV (DOCX)
+      type: file
+      options:
+        extensions:
+        - docx
+        rename: safe
+    - name: links
+      label: Academic profile links
+      type: object
+      fields:
+      - name: google_scholar
+        label: Google Scholar
+        type: string
+      - name: orcid
+        label: ORCID
+        type: string
+      - name: researchgate
+        label: ResearchGate
+        type: string
+      - name: linkedin
+        label: LinkedIn
+        type: string
+      - name: github
+        label: GitHub
+        type: string
+      - name: institutional_profile
+        label: Institutional profile
+        type: string
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_education
+    label: Education
+    type: file
+    path: content/en/education.json
+    format: json
+    fields:
+    - name: items
+      label: Degrees
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{degree} — {institution}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: degree
+        label: Degree
+        type: string
+        required: true
+      - name: institution
+        label: Institution
+        type: string
+        required: true
+      - name: field
+        label: Field
+        type: string
+      - name: period
+        label: Period / status
+        type: string
+      - name: gpa
+        label: GPA
+        type: string
+      - name: note
+        label: Note
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_research
+    label: Research
+    type: file
+    path: content/en/research.json
+    format: json
+    fields:
+    - name: intro
+      label: Research-page introduction
+      type: text
+    - name: interests
+      label: Research interests
+      type: string
+      list: true
+    - name: themes
+      label: Research themes
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: text
+    - name: thesis
+      label: Master's thesis
+      type: object
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English rendering
+        type: string
+        required: true
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: degree
+        label: Degree
+        type: string
+      - name: institution
+        label: Institution
+        type: string
+      - name: supervisor
+        label: Supervisor
+        type: string
+      - name: grade
+        label: Grade
+        type: string
+      - name: note
+        label: Note
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_publications
+    label: Publications
+    type: file
+    path: content/en/publications.json
+    format: json
+    fields:
+    - name: intro
+      label: Publications-page introduction
+      type: text
+    - name: items
+      label: Publications & presentations
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {year}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English rendering
+        type: string
+        required: true
+      - name: official_english_title
+        label: Official English title (only if verified)
+        type: string
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: type
+        label: Output type
+        type: select
+        required: true
+        options:
+          values:
+          - name: journal
+            label: Journal article
+          - name: conference
+            label: Conference paper / presentation
+      - name: status
+        label: Publication status
+        type: select
+        options:
+          values:
+          - name: accepted
+            label: Accepted
+          - name: published
+            label: Published
+          - name: published_or_accepted
+            label: Published / accepted (source is ambiguous)
+          - name: working_paper
+            label: Working paper
+          - name: under_review
+            label: Under review
+      - name: authors
+        label: Authors
+        type: string
+        list: true
+      - name: corresponding_author
+        label: Corresponding author
+        type: string
+      - name: venue
+        label: Venue as reported
+        type: string
+      - name: venue_english_rendering
+        label: English venue rendering
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: doi
+        label: DOI (verified only)
+        type: string
+      - name: url
+        label: Publication URL (verified only)
+        type: string
+      - name: note
+        label: Note
+        type: text
+      - name: featured
+        label: Feature on CV/home
+        type: boolean
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_projects
+    label: Projects
+    type: file
+    path: content/en/projects.json
+    format: json
+    fields:
+    - name: items
+      label: Research projects
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English title
+        type: string
+        required: true
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: role
+        label: Role
+        type: string
+      - name: lead
+        label: Project lead
+        type: string
+      - name: description
+        label: Description
+        type: text
+      - name: url
+        label: Project URL
+        type: string
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_experience
+    label: Experience & Service
+    type: file
+    path: content/en/experience.json
+    format: json
+    fields:
+    - name: items
+      label: Experience entries
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {period}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: category
+        label: Category
+        type: select
+        required: true
+        options:
+          values:
+          - name: research
+            label: Research
+          - name: professional
+            label: Professional
+          - name: service
+            label: Academic service
+          - name: other
+            label: Other
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: organization
+        label: Organization
+        type: string
+      - name: period
+        label: Period
+        type: string
+      - name: description
+        label: Description
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_awards
+    label: Awards
+    type: file
+    path: content/en/awards.json
+    format: json
+    fields:
+    - name: items
+      label: Honors & awards
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {year}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: issuer
+        label: Issuer
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: description
+        label: Description
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_skills
+    label: Skills & Certificates
+    type: file
+    path: content/en/skills.json
+    format: json
+    fields:
+    - name: groups
+      label: Skill / training groups
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Group title
+        type: string
+        required: true
+      - name: items
+        label: Items
+        type: string
+        list: true
+    - name: note
+      label: Public note
+      type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: en_site
+    label: Site Settings
+    type: file
+    path: content/en/site.json
+    format: json
+    fields:
+    - name: site_title
+      label: Site title
+      type: string
+      required: true
+    - name: default_description
+      label: SEO description
+      type: text
+    - name: footer_label
+      label: Footer label
+      type: string
+    - name: navigation
+      label: Navigation
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{label}'
+      fields:
+      - name: id
+        label: Page ID
+        type: string
+        required: true
+      - name: label
+        label: Menu label
+        type: string
+        required: true
+      - name: href
+        label: File / URL
+        type: string
+        required: true
+    - name: announcement
+      label: Optional announcement
+      type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+- name: persian
+  label: فارسی
+  type: group
+  items:
+  - name: fa_profile
+    label: Profile & Contact
+    type: file
+    path: content/fa/profile.json
+    format: json
+    fields:
+    - name: name
+      label: Full name
+      type: string
+      required: true
+    - name: headline
+      label: Academic headline
+      type: string
+      required: true
+    - name: affiliation
+      label: Affiliation
+      type: string
+      required: true
+    - name: location
+      label: Public location
+      type: string
+    - name: email
+      label: Public email
+      type: string
+      required: true
+    - name: eyebrow
+      label: Home-page eyebrow
+      type: string
+    - name: bio
+      label: Research profile
+      type: text
+    - name: short_bio
+      label: Short biography
+      type: text
+    - name: profile_image
+      label: Profile image
+      type: image
+      options:
+        categories:
+        - image
+        extensions:
+        - jpg
+        - jpeg
+        - png
+        - webp
+        rename: safe
+    - name: cv_pdf
+      label: CV (PDF)
+      type: file
+      options:
+        extensions:
+        - pdf
+        rename: safe
+    - name: cv_docx
+      label: CV (DOCX)
+      type: file
+      options:
+        extensions:
+        - docx
+        rename: safe
+    - name: links
+      label: Academic profile links
+      type: object
+      fields:
+      - name: google_scholar
+        label: Google Scholar
+        type: string
+      - name: orcid
+        label: ORCID
+        type: string
+      - name: researchgate
+        label: ResearchGate
+        type: string
+      - name: linkedin
+        label: LinkedIn
+        type: string
+      - name: github
+        label: GitHub
+        type: string
+      - name: institutional_profile
+        label: Institutional profile
+        type: string
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_education
+    label: Education
+    type: file
+    path: content/fa/education.json
+    format: json
+    fields:
+    - name: items
+      label: Degrees
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{degree} — {institution}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: degree
+        label: Degree
+        type: string
+        required: true
+      - name: institution
+        label: Institution
+        type: string
+        required: true
+      - name: field
+        label: Field
+        type: string
+      - name: period
+        label: Period / status
+        type: string
+      - name: gpa
+        label: GPA
+        type: string
+      - name: note
+        label: Note
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_research
+    label: Research
+    type: file
+    path: content/fa/research.json
+    format: json
+    fields:
+    - name: intro
+      label: Research-page introduction
+      type: text
+    - name: interests
+      label: Research interests
+      type: string
+      list: true
+    - name: themes
+      label: Research themes
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: text
+    - name: thesis
+      label: Master's thesis
+      type: object
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English rendering
+        type: string
+        required: true
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: degree
+        label: Degree
+        type: string
+      - name: institution
+        label: Institution
+        type: string
+      - name: supervisor
+        label: Supervisor
+        type: string
+      - name: grade
+        label: Grade
+        type: string
+      - name: note
+        label: Note
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_publications
+    label: Publications
+    type: file
+    path: content/fa/publications.json
+    format: json
+    fields:
+    - name: intro
+      label: Publications-page introduction
+      type: text
+    - name: items
+      label: Publications & presentations
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {year}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English rendering
+        type: string
+        required: true
+      - name: official_english_title
+        label: Official English title (only if verified)
+        type: string
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: type
+        label: Output type
+        type: select
+        required: true
+        options:
+          values:
+          - name: journal
+            label: Journal article
+          - name: conference
+            label: Conference paper / presentation
+      - name: status
+        label: Publication status
+        type: select
+        options:
+          values:
+          - name: accepted
+            label: Accepted
+          - name: published
+            label: Published
+          - name: published_or_accepted
+            label: Published / accepted (source is ambiguous)
+          - name: working_paper
+            label: Working paper
+          - name: under_review
+            label: Under review
+      - name: authors
+        label: Authors
+        type: string
+        list: true
+      - name: corresponding_author
+        label: Corresponding author
+        type: string
+      - name: venue
+        label: Venue as reported
+        type: string
+      - name: venue_english_rendering
+        label: English venue rendering
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: doi
+        label: DOI (verified only)
+        type: string
+      - name: url
+        label: Publication URL (verified only)
+        type: string
+      - name: note
+        label: Note
+        type: text
+      - name: featured
+        label: Feature on CV/home
+        type: boolean
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_projects
+    label: Projects
+    type: file
+    path: content/fa/projects.json
+    format: json
+    fields:
+    - name: items
+      label: Research projects
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: English title
+        type: string
+        required: true
+      - name: title_fa
+        label: Persian title
+        type: string
+      - name: role
+        label: Role
+        type: string
+      - name: lead
+        label: Project lead
+        type: string
+      - name: description
+        label: Description
+        type: text
+      - name: url
+        label: Project URL
+        type: string
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_experience
+    label: Experience & Service
+    type: file
+    path: content/fa/experience.json
+    format: json
+    fields:
+    - name: items
+      label: Experience entries
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {period}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: category
+        label: Category
+        type: select
+        required: true
+        options:
+          values:
+          - name: research
+            label: Research
+          - name: professional
+            label: Professional
+          - name: service
+            label: Academic service
+          - name: other
+            label: Other
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: organization
+        label: Organization
+        type: string
+      - name: period
+        label: Period
+        type: string
+      - name: description
+        label: Description
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_awards
+    label: Awards
+    type: file
+    path: content/fa/awards.json
+    format: json
+    fields:
+    - name: items
+      label: Honors & awards
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} — {year}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: issuer
+        label: Issuer
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: description
+        label: Description
+        type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_skills
+    label: Skills & Certificates
+    type: file
+    path: content/fa/skills.json
+    format: json
+    fields:
+    - name: groups
+      label: Skill / training groups
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title}'
+      fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: ^[a-z0-9-]+$
+      - name: title
+        label: Group title
+        type: string
+        required: true
+      - name: items
+        label: Items
+        type: string
+        list: true
+    - name: note
+      label: Public note
+      type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
+  - name: fa_site
+    label: Site Settings
+    type: file
+    path: content/fa/site.json
+    format: json
+    fields:
+    - name: site_title
+      label: Site title
+      type: string
+      required: true
+    - name: default_description
+      label: SEO description
+      type: text
+    - name: footer_label
+      label: Footer label
+      type: string
+    - name: navigation
+      label: Navigation
+      type: object
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{label}'
+      fields:
+      - name: id
+        label: Page ID
+        type: string
+        required: true
+      - name: label
+        label: Menu label
+        type: string
+        required: true
+      - name: href
+        label: File / URL
+        type: string
+        required: true
+    - name: announcement
+      label: Optional announcement
+      type: text
+    operations:
+      create: false
+      rename: false
+      delete: false
