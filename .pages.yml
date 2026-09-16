@@ -47,32 +47,6 @@ content:
     - name: short_bio
       label: Short biography
       type: text
-    - name: profile_image
-      label: Profile image
-      type: image
-      options:
-        categories:
-        - image
-        extensions:
-        - jpg
-        - jpeg
-        - png
-        - webp
-        rename: safe
-    - name: cv_pdf
-      label: CV (PDF)
-      type: file
-      options:
-        extensions:
-        - pdf
-        rename: safe
-    - name: cv_docx
-      label: CV (DOCX)
-      type: file
-      options:
-        extensions:
-        - docx
-        rename: safe
     - name: links
       label: Academic profile links
       type: object
@@ -474,6 +448,10 @@ content:
     - name: default_description
       label: SEO description
       type: text
+    - name: keywords
+      label: SEO keywords
+      type: string
+      list: true
     - name: footer_label
       label: Footer label
       type: string
@@ -497,9 +475,127 @@ content:
         label: File / URL
         type: string
         required: true
+      - name: enabled
+        label: Visible in navigation
+        type: boolean
     - name: announcement
       label: Optional announcement
       type: text
+    - name: announcement_enabled
+      label: Show announcement
+      type: boolean
+    - name: ui
+      label: Interface text / متن‌های رابط
+      type: object
+      fields:
+      - name: home_about_eyebrow
+        label: Home About Eyebrow
+        type: string
+      - name: home_about_title
+        label: Home About Title
+        type: string
+      - name: home_research_eyebrow
+        label: Home Research Eyebrow
+        type: string
+      - name: home_research_title
+        label: Home Research Title
+        type: string
+      - name: home_education_eyebrow
+        label: Home Education Eyebrow
+        type: string
+      - name: home_education_title
+        label: Home Education Title
+        type: string
+      - name: research_eyebrow
+        label: Research Eyebrow
+        type: string
+      - name: research_title
+        label: Research Title
+        type: string
+      - name: research_areas_label
+        label: Research Areas Label
+        type: string
+      - name: research_thesis_label
+        label: Research Thesis Label
+        type: string
+      - name: research_projects_label
+        label: Research Projects Label
+        type: string
+      - name: publications_eyebrow
+        label: Publications Eyebrow
+        type: string
+      - name: publications_title
+        label: Publications Title
+        type: string
+      - name: experience_eyebrow
+        label: Experience Eyebrow
+        type: string
+      - name: experience_title
+        label: Experience Title
+        type: string
+      - name: experience_lede
+        label: Experience Lede
+        type: string
+      - name: experience_honors_label
+        label: Experience Honors Label
+        type: string
+      - name: experience_training_label
+        label: Experience Training Label
+        type: string
+      - name: contact_eyebrow
+        label: Contact Eyebrow
+        type: string
+      - name: contact_title
+        label: Contact Title
+        type: string
+      - name: contact_lede
+        label: Contact Lede
+        type: string
+      - name: contact_profiles_label
+        label: Contact Profiles Label
+        type: string
+      - name: teaching_eyebrow
+        label: Teaching Eyebrow
+        type: string
+      - name: teaching_title
+        label: Teaching Title
+        type: string
+      - name: teaching_lede
+        label: Teaching Lede
+        type: string
+      - name: cv_education_label
+        label: Cv Education Label
+        type: string
+      - name: cv_interests_label
+        label: Cv Interests Label
+        type: string
+      - name: cv_publications_label
+        label: Cv Publications Label
+        type: string
+      - name: cv_projects_label
+        label: Cv Projects Label
+        type: string
+      - name: cv_service_label
+        label: Cv Service Label
+        type: string
+      - name: cv_note
+        label: Cv Note
+        type: string
+      - name: view_research
+        label: View Research
+        type: string
+      - name: download_cv
+        label: Download Cv
+        type: string
+      - name: download_pdf
+        label: Download Pdf
+        type: string
+      - name: download_docx
+        label: Download Docx
+        type: string
+      - name: print
+        label: Print
+        type: string
     operations:
       create: false
       rename: false
@@ -509,7 +605,7 @@ content:
   type: group
   items:
   - name: fa_profile
-    label: Profile & Contact
+    label: مشخصات و ارتباط
     type: file
     path: content/fa/profile.json
     format: json
@@ -542,32 +638,6 @@ content:
     - name: short_bio
       label: Short biography
       type: text
-    - name: profile_image
-      label: Profile image
-      type: image
-      options:
-        categories:
-        - image
-        extensions:
-        - jpg
-        - jpeg
-        - png
-        - webp
-        rename: safe
-    - name: cv_pdf
-      label: CV (PDF)
-      type: file
-      options:
-        extensions:
-        - pdf
-        rename: safe
-    - name: cv_docx
-      label: CV (DOCX)
-      type: file
-      options:
-        extensions:
-        - docx
-        rename: safe
     - name: links
       label: Academic profile links
       type: object
@@ -595,7 +665,7 @@ content:
       rename: false
       delete: false
   - name: fa_education
-    label: Education
+    label: تحصیلات
     type: file
     path: content/fa/education.json
     format: json
@@ -638,7 +708,7 @@ content:
       rename: false
       delete: false
   - name: fa_research
-    label: Research
+    label: پژوهش
     type: file
     path: content/fa/research.json
     format: json
@@ -706,7 +776,7 @@ content:
       rename: false
       delete: false
   - name: fa_publications
-    label: Publications
+    label: انتشارات
     type: file
     path: content/fa/publications.json
     format: json
@@ -795,7 +865,7 @@ content:
       rename: false
       delete: false
   - name: fa_projects
-    label: Projects
+    label: طرح‌های پژوهشی
     type: file
     path: content/fa/projects.json
     format: json
@@ -837,7 +907,7 @@ content:
       rename: false
       delete: false
   - name: fa_experience
-    label: Experience & Service
+    label: سوابق و فعالیت‌ها
     type: file
     path: content/fa/experience.json
     format: json
@@ -887,7 +957,7 @@ content:
       rename: false
       delete: false
   - name: fa_awards
-    label: Awards
+    label: افتخارات
     type: file
     path: content/fa/awards.json
     format: json
@@ -923,7 +993,7 @@ content:
       rename: false
       delete: false
   - name: fa_skills
-    label: Skills & Certificates
+    label: مهارت‌ها و گواهی‌ها
     type: file
     path: content/fa/skills.json
     format: json
@@ -957,7 +1027,7 @@ content:
       rename: false
       delete: false
   - name: fa_site
-    label: Site Settings
+    label: تنظیمات سایت
     type: file
     path: content/fa/site.json
     format: json
@@ -969,6 +1039,10 @@ content:
     - name: default_description
       label: SEO description
       type: text
+    - name: keywords
+      label: کلیدواژه‌های SEO
+      type: string
+      list: true
     - name: footer_label
       label: Footer label
       type: string
@@ -992,10 +1066,350 @@ content:
         label: File / URL
         type: string
         required: true
+      - name: enabled
+        label: نمایش در منو
+        type: boolean
     - name: announcement
       label: Optional announcement
       type: text
+    - name: announcement_enabled
+      label: نمایش اطلاعیه
+      type: boolean
+    - name: ui
+      label: متن‌های رابط و عنوان‌ها
+      type: object
+      fields:
+      - name: home_about_eyebrow
+        label: home_about_eyebrow
+        type: string
+      - name: home_about_title
+        label: home_about_title
+        type: string
+      - name: home_research_eyebrow
+        label: home_research_eyebrow
+        type: string
+      - name: home_research_title
+        label: home_research_title
+        type: string
+      - name: home_education_eyebrow
+        label: home_education_eyebrow
+        type: string
+      - name: home_education_title
+        label: home_education_title
+        type: string
+      - name: research_eyebrow
+        label: research_eyebrow
+        type: string
+      - name: research_title
+        label: research_title
+        type: string
+      - name: research_areas_label
+        label: research_areas_label
+        type: string
+      - name: research_thesis_label
+        label: research_thesis_label
+        type: string
+      - name: research_projects_label
+        label: research_projects_label
+        type: string
+      - name: publications_eyebrow
+        label: publications_eyebrow
+        type: string
+      - name: publications_title
+        label: publications_title
+        type: string
+      - name: experience_eyebrow
+        label: experience_eyebrow
+        type: string
+      - name: experience_title
+        label: experience_title
+        type: string
+      - name: experience_lede
+        label: experience_lede
+        type: string
+      - name: experience_honors_label
+        label: experience_honors_label
+        type: string
+      - name: experience_training_label
+        label: experience_training_label
+        type: string
+      - name: contact_eyebrow
+        label: contact_eyebrow
+        type: string
+      - name: contact_title
+        label: contact_title
+        type: string
+      - name: contact_lede
+        label: contact_lede
+        type: string
+      - name: contact_profiles_label
+        label: contact_profiles_label
+        type: string
+      - name: teaching_eyebrow
+        label: teaching_eyebrow
+        type: string
+      - name: teaching_title
+        label: teaching_title
+        type: string
+      - name: teaching_lede
+        label: teaching_lede
+        type: string
+      - name: cv_education_label
+        label: cv_education_label
+        type: string
+      - name: cv_interests_label
+        label: cv_interests_label
+        type: string
+      - name: cv_publications_label
+        label: cv_publications_label
+        type: string
+      - name: cv_projects_label
+        label: cv_projects_label
+        type: string
+      - name: cv_service_label
+        label: cv_service_label
+        type: string
+      - name: cv_note
+        label: cv_note
+        type: string
+      - name: view_research
+        label: view_research
+        type: string
+      - name: download_cv
+        label: download_cv
+        type: string
+      - name: download_pdf
+        label: download_pdf
+        type: string
+      - name: download_docx
+        label: download_docx
+        type: string
+      - name: print
+        label: print
+        type: string
     operations:
       create: false
       rename: false
       delete: false
+- name: design_branding
+  label: Design & Branding — ظاهر و تنظیمات اصلی
+  type: file
+  path: content/settings/design.json
+  format: json
+  fields:
+  - name: branding
+    label: Branding / برندینگ
+    type: object
+    fields:
+    - name: logo
+      label: Header logo / لوگوی سربرگ
+      type: image
+      options:
+        extensions:
+        - jpg
+        - jpeg
+        - png
+        - webp
+        - svg
+        rename: safe
+    - name: favicon
+      label: Favicon / آیکون سایت
+      type: image
+      options:
+        extensions:
+        - svg
+        - png
+        - jpg
+        - jpeg
+        - webp
+        rename: safe
+    - name: profile_image
+      label: Profile photo / عکس پروفایل
+      type: image
+      options:
+        extensions:
+        - jpg
+        - jpeg
+        - png
+        - webp
+        rename: safe
+    - name: cv_pdf
+      label: CV PDF / رزومه PDF
+      type: file
+      options:
+        extensions:
+        - pdf
+        rename: safe
+    - name: cv_docx
+      label: CV Word / رزومه Word
+      type: file
+      options:
+        extensions:
+        - docx
+        rename: safe
+    - name: open_graph_image
+      label: Social preview image / تصویر اشتراک‌گذاری
+      type: image
+      options:
+        extensions:
+        - jpg
+        - jpeg
+        - png
+        - webp
+        rename: safe
+  - name: colors
+    label: Colors / رنگ‌ها
+    type: object
+    fields:
+    - name: background
+      label: Background
+      type: string
+    - name: surface
+      label: Cards / surface
+      type: string
+    - name: text
+      label: Main text
+      type: string
+    - name: muted
+      label: Muted text
+      type: string
+    - name: line
+      label: Borders
+      type: string
+    - name: accent
+      label: Primary accent
+      type: string
+    - name: accent_secondary
+      label: Secondary accent
+      type: string
+    - name: soft
+      label: Soft background
+      type: string
+  - name: typography
+    label: Typography / تایپوگرافی
+    type: object
+    fields:
+    - name: english_font
+      label: English font
+      type: select
+      options:
+        values:
+        - Times New Roman
+        - Georgia
+        - Arial
+        - Helvetica
+        - Verdana
+        - Tahoma
+    - name: persian_font
+      label: Persian font
+      type: select
+      options:
+        values:
+        - B Nazanin
+        - Nazanin
+        - Tahoma
+        - Arial
+        - Times New Roman
+    - name: base_font_size
+      label: Base font size (px)
+      type: number
+    - name: english_line_height
+      label: English line height
+      type: number
+    - name: persian_line_height
+      label: Persian line height
+      type: number
+    - name: hero_title_scale
+      label: Hero title scale
+      type: number
+  - name: layout
+    label: Layout / چیدمان
+    type: object
+    fields:
+    - name: max_width
+      label: Maximum content width (px)
+      type: number
+    - name: section_spacing
+      label: Section spacing (px)
+      type: number
+    - name: hero_space_top
+      label: Hero top spacing (px)
+      type: number
+    - name: hero_space_bottom
+      label: Hero bottom spacing (px)
+      type: number
+    - name: hero_gap
+      label: Hero text/image gap (px)
+      type: number
+    - name: portrait_size
+      label: Portrait width (%)
+      type: number
+    - name: portrait_radius
+      label: Portrait corner radius (px)
+      type: number
+    - name: button_radius
+      label: Button corner radius (px)
+      type: number
+    - name: card_radius
+      label: Card corner radius (px)
+      type: number
+    - name: nav_gap
+      label: Navigation gap (px)
+      type: number
+    - name: portrait_side
+      label: Portrait side
+      type: select
+      options:
+        values:
+        - name: automatic
+          label: Automatic by language
+        - name: left
+          label: Always left
+        - name: right
+          label: Always right
+  - name: controls
+    label: Site controls / کنترل‌های سایت
+    type: object
+    fields:
+    - name: sticky_header
+      label: Sticky header
+      type: boolean
+    - name: show_shadows
+      label: Show shadows
+      type: boolean
+    - name: show_language_switch
+      label: Show EN/فارسی switch
+      type: boolean
+    - name: show_footer
+      label: Show footer
+      type: boolean
+    - name: show_social_links_on_home
+      label: Show academic links on homepage
+      type: boolean
+    - name: show_brand_name
+      label: Show name next to logo / نمایش نام کنار لوگو
+      type: boolean
+  - name: home_sections
+    label: Homepage sections / بخش‌های صفحه اصلی
+    type: object
+    list:
+      collapsible:
+        collapsed: false
+        summary: '{id}'
+    fields:
+    - name: id
+      label: Section ID (hero/about/research/education)
+      type: select
+      options:
+        values:
+        - hero
+        - about
+        - research
+        - education
+    - name: enabled
+      label: Visible
+      type: boolean
+  operations:
+    create: false
+    rename: false
+    delete: false
