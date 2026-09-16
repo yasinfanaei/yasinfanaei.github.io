@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      payload:
+        description: Pages CMS action payload (optional)
+        required: false
+        type: string
 
 permissions:
   contents: read
