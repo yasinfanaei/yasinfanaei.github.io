@@ -101,3 +101,17 @@ h3 { margin:0 0 8px; font-size:1.08rem; }
 .full-span { grid-column:1 / -1; }
 .content-ready .loading { display:none; }
 @media (max-width:820px) { .entry-heading-row { flex-direction:column; gap:6px; } }
+
+/* Bilingual navigation and academic profiles */
+.nav-tools { display:flex; align-items:center; gap:14px; }
+.language-switch { display:inline-flex; align-items:center; justify-content:center; min-width:42px; padding:6px 10px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color:var(--text); font-weight:700; font-size:.85rem; background:var(--surface); }
+.academic-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.academic-links a { text-decoration:none; color:var(--accent); border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent); font-size:.92rem; }
+.academic-links.compact { margin-top:18px; }
+html[dir="rtl"] body { direction:rtl; text-align:right; font-family:Tahoma,"Noto Sans Arabic","Segoe UI",Arial,sans-serif; }
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] .entry-title { font-family:Tahoma,"Noto Naskh Arabic","Segoe UI",Arial,sans-serif; letter-spacing:0; }
+html[dir="rtl"] .nav-wrap, html[dir="rtl"] .nav, html[dir="rtl"] .actions, html[dir="rtl"] .hero-meta, html[dir="rtl"] .entry-links, html[dir="rtl"] .academic-links { direction:rtl; }
+html[dir="rtl"] .note, html[dir="rtl"] .load-error { border-left:0; border-right:3px solid var(--accent-2); border-radius:10px 0 0 10px; }
+html[dir="rtl"] .entry-heading-row { direction:rtl; }
+html[dir="rtl"] .cv-year { text-align:right; }
+@media (max-width:820px) { .nav-tools { width:100%; justify-content:space-between; } }

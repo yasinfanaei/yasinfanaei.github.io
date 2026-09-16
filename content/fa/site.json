@@ -1,0 +1,38 @@
+{
+  "site_title": "یاسین فنائی شاهرودی | اقتصاد",
+  "default_description": "وب‌سایت دانشگاهی یاسین فنائی شاهرودی، دانشجوی دکتری اقتصاد بخش عمومی دانشگاه سمنان.",
+  "footer_label": "وب‌سایت دانشگاهی",
+  "navigation": [
+    {
+      "id": "home",
+      "label": "خانه",
+      "href": "index.html"
+    },
+    {
+      "id": "research",
+      "label": "پژوهش",
+      "href": "research.html"
+    },
+    {
+      "id": "publications",
+      "label": "انتشارات",
+      "href": "publications.html"
+    },
+    {
+      "id": "experience",
+      "label": "سوابق",
+      "href": "experience.html"
+    },
+    {
+      "id": "cv",
+      "label": "رزومه",
+      "href": "cv.html"
+    },
+    {
+      "id": "contact",
+      "label": "ارتباط",
+      "href": "contact.html"
+    }
+  ],
+  "announcement": ""
+}

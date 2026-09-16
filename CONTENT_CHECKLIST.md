@@ -1,35 +1,23 @@
-# Academic-site content checklist
+# Content checklist
 
-Use this checklist when updating the site through Pages CMS.
+## English / فارسی
 
-## Profile & Contact
-- Full English name and preferred academic headline
-- Current affiliation
-- Public academic email
-- Public city/country only if desired
-- Profile image suitable for public use
-- Google Scholar, ORCID, LinkedIn, GitHub, and institutional-profile links when available
-- Current public CV PDF/DOCX
+Pages CMS now has two parallel editor sets. When a factual record changes (degree, publication status, year, affiliation), update the corresponding record in both language sections so the two versions remain aligned.
 
-## Research
-- Research interests
-- Research-theme descriptions
-- Thesis title, supervisor, and grade only as supported by the source CV
-- Research projects and collaborator roles
+## Academic profile links
 
-## Publications
-For each item, verify before publishing:
-- Title and whether the English title is official or only a translation/rendering
-- Authors and corresponding author
-- Output type and publication status
-- Venue and year
-- DOI and URL only when verified
-- Do not invent volume, issue, page range, or publication metadata
+Currently configured:
 
-## Education, experience, awards, and skills
-- Keep dates exactly as verified; omit inconsistent dates rather than guessing
-- Distinguish academic service from professional/research experience
-- Treat courses/workshops as documented training, not automatically as proof of advanced proficiency
+- ORCID: `https://orcid.org/0009-0005-9508-604X`
+- ResearchGate: `https://www.researchgate.net/profile/Yasin-Fanaei`
+- Google Scholar: `https://scholar.google.com/citations?user=6_vY6vkAAAAJ&hl=en`
+- LinkedIn: `https://www.linkedin.com/in/yasin-fanaei-4b5959354`
+- GitHub: `https://github.com/yasinfanaei`
+
+## Bibliographic fields to add only after verification
+
+For each paper, add DOI, publication URL, volume, issue, page range and official English title only when verified from the publisher, journal or conference record.
 
 ## Privacy
-Never add government identification numbers, birth date, marital status, or a private telephone number to the public site or repository.
+
+Never add national ID, birth date, marital status or private phone numbers to the public repository or Pages CMS.

@@ -17,10 +17,8 @@ if str(SCRIPT_DIR) not in sys.path:
 from validate_content import validate_site
 from validate_pages_config import validate_pages_config
 
-HTML_FILES = [
-    "index.html", "research.html", "publications.html", "experience.html",
-    "cv.html", "contact.html", "teaching.html",
-]
+BASE_HTML_FILES = ["index.html", "research.html", "publications.html", "experience.html", "cv.html", "contact.html", "teaching.html"]
+HTML_FILES = BASE_HTML_FILES + [f"fa/{name}" for name in BASE_HTML_FILES]
 TEXT_SUFFIXES = {".html", ".js", ".json", ".yml", ".yaml", ".md", ".css"}
 LONG_NUMBER = re.compile(r"(?<!\d)\d{10,12}(?!\d)")
 IRAN_MOBILE = re.compile(r"(?<!\d)0?9\d{2}[- ]?\d{3}[- ]?\d{4}(?!\d)")
@@ -70,17 +68,18 @@ def _check_html_links(root: Path, errors: list[str]) -> None:
 
 
 def _check_profile_assets(root: Path, errors: list[str]) -> None:
-    profile_path = root / "content" / "profile.json"
-    if not profile_path.exists():
-        return
-    try:
-        profile = json.loads(profile_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return
-    for key in ("profile_image", "cv_pdf", "cv_docx"):
-        value = str(profile.get(key, "")).strip()
-        if value and not (root / value.lstrip("/")).exists():
-            errors.append(f"profile.json: {key} points to missing file {value!r}")
+    for locale in ('en', 'fa'):
+        profile_path = root / 'content' / locale / 'profile.json'
+        if not profile_path.exists():
+            continue
+        try:
+            profile = json.loads(profile_path.read_text(encoding='utf-8'))
+        except json.JSONDecodeError:
+            continue
+        for key in ('profile_image', 'cv_pdf', 'cv_docx'):
+            value = str(profile.get(key, '')).strip()
+            if value and not (root / value.lstrip('/')).exists():
+                errors.append(f'content/{locale}/profile.json: {key} points to missing file {value!r}')
 
 
 def scan_docx_for_sensitive_numbers(path: Path) -> list[str]:
