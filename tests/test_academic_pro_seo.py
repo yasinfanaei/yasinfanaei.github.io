@@ -40,6 +40,14 @@ class AcademicProSeoTests(unittest.TestCase):
         for token in ('page_seo','function updateStructuredData','application/ld+json','ProfilePage','Person','sameAs'):
             self.assertIn(token,JS)
 
+    def test_homepages_expose_identity_without_javascript(self):
+        en=(ROOT/'index.html').read_text(encoding='utf-8')
+        fa=(ROOT/'fa/index.html').read_text(encoding='utf-8')
+        for token in ('Yasin Fanaei Shahroudi','PhD Student in Public Economics','Semnan University','application/ld+json','https://schema.org','sameAs'):
+            self.assertIn(token,en)
+        for token in ('یاسین فنائی شاهرودی','دانشجوی دکتری اقتصاد بخش عمومی','دانشگاه سمنان','application/ld+json','https://schema.org','sameAs'):
+            self.assertIn(token,fa)
+
     def test_analytics_is_opt_in_and_disabled_by_default(self):
         design=json.loads((ROOT/'content/settings/design.json').read_text(encoding='utf-8'))
         self.assertFalse(design['analytics']['enabled'])
