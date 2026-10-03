@@ -49,26 +49,11 @@
     "show_search": true
   },
   "home_sections": [
-    {
-      "id": "hero",
-      "enabled": true
-    },
-    {
-      "id": "about",
-      "enabled": true
-    },
-    {
-      "id": "research",
-      "enabled": true
-    },
-    {
-      "id": "education",
-      "enabled": true
-    },
-    {
-      "id": "news",
-      "enabled": true
-    }
+    {"id": "hero", "enabled": true},
+    {"id": "about", "enabled": true},
+    {"id": "research", "enabled": true},
+    {"id": "education", "enabled": true},
+    {"id": "news", "enabled": true}
   ],
   "dark_colors": {
     "background": "#121412",
@@ -80,17 +65,15 @@
     "accent_secondary": "#7dd3c7",
     "soft": "#1f2a27"
   },
-  "theme": {
-    "default_mode": "system"
-  },
+  "theme": {"default_mode": "system"},
   "analytics": {
     "enabled": false,
     "provider": "google_analytics",
     "measurement_id": ""
   },
   "seo": {
-    "site_url": "https://yasinfanaei.github.io",
+    "site_url": "https://yasinfanaei.github.io/yasinfanaeishahroudi",
     "structured_data_enabled": true,
-    "indexing_enabled": true
+    "indexing_enabled": false
   }
 }
